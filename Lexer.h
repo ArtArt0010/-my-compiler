@@ -1,10 +1,19 @@
 #pragma once
 #include"Hash.h"
 #include<fstream>
+#include<vector>
 
 enum class TypeLexem
 {
-	Function, Begin, End, FunctionName, Descriptions, Operators, Descr, VarList, Type, Op, Options, SimpleExpr, Id, Const
+	Function, Begin, End, FunctionName, Descriptions, Operators, Descr, VarList, Type, Op, Options, SimpleExpr, Id, Const, int_num, id_name, SEPARATOR, UNKNOWN
+};
+
+enum class State {
+	START,          // начальное состояние
+	IN_IDENTIFIER,  // читаем идентификатор
+	IN_NUMBER,      // читаем число
+	IN_OPERATOR,    // читаем оператор
+	DONE            // завершил
 };
 
 struct Token
@@ -33,7 +42,16 @@ public:
 
 	std::string readLex();
 	void Analyz();
-	void typeLexem(std::string lex);
+	TypeLexem typeLexem(std::string lex);
 
+	bool isKeyWord(const std::string& lexem);
+	bool isOperator(char c);
+	bool isSeparator(char c);
+	State Ident(char c);
+	State Number(char c);
+	State HandleState(char c);
+
+
+	
 };
 
