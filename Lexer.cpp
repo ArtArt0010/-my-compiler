@@ -25,17 +25,49 @@ std::string Lexer::readLex()
 
 void Lexer::Analyz()
 {
-	
+	std::string separators = " ,();{}";
 	std::string lex;
 	std::ifstream in(nameFile);
+	char c;
 
 	State state;
-	while(in >> lex) {
-		Token token(lex, typeLexem(lex));
+	while(in.get(c)) {
+		if (c == ' ') {
+			if (!lex.empty()) {
+				Token token(lex, typeLexem(lex));
+				lex.clear();
+			}
+			continue;
+		}
+
+		if (isOperator(c) || isSeparator(c)) {
+			if (!lex.empty()) {
+				Token token(lex, typeLexem(lex));
+				lex.clear();
+			}
+			if (isOperator(c)) {
+				lex += c;
+				Token token(lex, TypeLexem::Op);
+				lex.clear();
+			}
+			else
+			{
+				lex += c;
+				Token token(lex, TypeLexem::SEPARATOR);
+				lex.clear();
+			}
+			continue;
+		}
 
 
+
+		lex += c;
 	}
 	
+	if (!lex.empty()) {
+		Token token(lex, TypeLexem::SEPARATOR);
+		lex.clear();
+	}
 
 	
 }
@@ -140,8 +172,10 @@ bool Lexer::isOperator(char c)
 bool Lexer::isSeparator(char c)
 {
 	std::string separators = "();{},:";
-	if (separators.find(c) != std::string::npos) {
-		return separators.find(c);
+	for (int i = 0; i < separators.size(); ++i) {
+		if (c == separators[i]) {
+			return true;
+		}
 	}
 	return false;
 }
