@@ -5,7 +5,7 @@ HashTable::HashTable()
     buf_size = default_size;
     size = 0;
     full_size = 0;
-    arr = new Token * [buf_size];
+    arr = new Node * [buf_size];
     for (int i = 0; i < buf_size; ++i) {
         arr[i] = nullptr;
     }
@@ -30,7 +30,7 @@ void HashTable::ResizeHashTable()
     full_size = 0;
     size = 0;
 
-    Token** tmp_arr = new Token * [buf_size];
+    Node** tmp_arr = new Node * [buf_size];
     for (int i = 0; i < buf_size; ++i) {
         tmp_arr[i] = nullptr;
     }
@@ -57,7 +57,7 @@ void HashTable::ReHash()
 {
     full_size = 0;
     size = 0;
-    Token** tmp_arr = new Token * [buf_size];
+    Node** tmp_arr = new Node * [buf_size];
 
     for (int i = 0; i < buf_size; ++i) {
         tmp_arr[i] = nullptr;
@@ -148,7 +148,7 @@ bool HashTable::Add(std::string& value, const HashFunction1& hash1, const HashFu
     }
     //если нет места создаём новый Node
     if (first_delet == -1) {
-        arr[pos] = new Token(value);
+        arr[pos] = new Node(value);
         ++full_size;
     }
     else {

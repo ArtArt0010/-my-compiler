@@ -13,33 +13,22 @@ struct HashFunction2
 	int operator()(const std::string& s, int table_size) const;
  
 };
-//
-//struct Token
-//{
-//	std::string lexema;
-//	bool deletFlag;
-//	Token(const std::string& value_) : lexema(value_), deletFlag(false) {}
-//
-//};
 
-enum class TypeLexem
+struct Node
 {
-	Function, Begin, End, FunctionName, Descriptions, Operators, Descr, VarList, Type, Op, Options, SimpleExpr, Id, Const, int_num, id_name, SEPARATOR, UNKNOWN
-};
-struct Token
-{
+	std::string value;
 	bool deletFlag;
-	TypeLexem type;
-	std::string lexema;
-	Token(std::string lex, TypeLexem _type);
+	Node(const std::string& value_) : value(value_), deletFlag(false) {}
+
 };
+
 
 class HashTable
 {
 private:
 	static const int default_size = 8;
 	double rehash_size = 0.75;
-	Token** arr;
+	Node** arr;
 	int size;//размер массива без учёта удаленных ячеек
 	int buf_size;//размер самого массива (всей таблицы)
 	int full_size;
