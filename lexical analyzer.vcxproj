@@ -136,6 +136,7 @@
     <ClInclude Include="Lexer.h" />
   </ItemGroup>
   <ItemGroup>
+    <Text Include="output.txt" />
     <Text Include="test.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

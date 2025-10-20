@@ -9,7 +9,7 @@ int main()
     
     Lex.Analyz();
     Lex.print();
-
+    Lex.print_file("output.txt");
    
 
 }

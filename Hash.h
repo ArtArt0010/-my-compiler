@@ -1,6 +1,7 @@
 #pragma once
 #include<string>
 #include<iostream>
+#include<fstream>
 
 enum class TypeLexem
 {
@@ -43,7 +44,8 @@ public:
 
 	void Print();
 
-
+	void print_file(std::string file_name);
+	
 };
 
 std::string LexTypeToString(TypeLexem type);

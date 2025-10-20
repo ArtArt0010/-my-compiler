@@ -159,4 +159,9 @@ void Lexer::print()
 	tableTokens.Print();
 }
 
+void Lexer::print_file(std::string file_name)
+{
+	tableTokens.print_file(file_name);
+}
+
 

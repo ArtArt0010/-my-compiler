@@ -117,13 +117,29 @@ void HashTable::Print() {
     std::cout << "------------------\n";
 }
 
+void HashTable::print_file(std::string file_name)
+{
+    std::ofstream out(file_name);
+    for (int i = 0; i < size; ++i) {
+        if (arr[i]) {
+            
+            Token* tmp = arr[i];
+            while (tmp) {
+                out << LexTypeToString(tmp->type) << " | " << tmp->lexema << " | "<< "[" << i << "]"<<"\n";
+                tmp = tmp->next;
+            }
+           
+        }
+    }
+}
+
 std::string LexTypeToString(TypeLexem type)
 {
     switch (type)
     {
     case TypeLexem::IDENTIFIER:        return "ID";
     case TypeLexem::KEYWORD:     return "Kw";
-    case TypeLexem::NUMBER:     return "Num";
+    case TypeLexem::NUMBER:     return "Const";
     case TypeLexem::OPERATOR:          return "Op";
     case TypeLexem::SEPARATOR:   return "Separator";
     case TypeLexem::UNKNOWN:     return "Unknown";

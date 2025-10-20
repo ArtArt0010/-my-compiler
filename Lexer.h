@@ -46,17 +46,8 @@ public:
 	
 	TypeChar isTypeChar(char c);
 
-
-
-
-	TypeLexem typeLexem(std::string lex);
-
-	
-	State Ident(char c);
-	State Number(char c);
-	State HandleState(char c);
-
 	void print();
+	void print_file(std::string file_name);
 	
 };
 
