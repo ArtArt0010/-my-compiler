@@ -8,7 +8,9 @@ int main()
     Lexer Lex("test.txt");
     
     Lex.Analyz();
+    Lex.print();
 
-    
+   
+
 }
 

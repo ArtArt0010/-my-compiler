@@ -1,52 +1,48 @@
 #pragma once
 #include<string>
+#include<iostream>
 
-int HashFunctionHorner(const std::string& s, int table_size, const int key);
-
-struct HashFunction1
+enum class TypeLexem
 {
-    int operator()(const std::string& s, int table_size) const;
-  
-};
-struct HashFunction2
-{
-	int operator()(const std::string& s, int table_size) const;
- 
+	Function, Begin, End, FunctionName, Descriptions, Operators, Descr, VarList, Type, Op, Options, SimpleExpr, Id, Const, int_num, id_name, SEPARATOR, UNKNOWN
 };
 
-struct Node
+struct Token
 {
-	std::string value;
-	bool deletFlag;
-	Node(const std::string& value_) : value(value_), deletFlag(false) {}
-
+	TypeLexem type;
+	std::string lexema;
+	Token* next;
+	Token(std::string lex, TypeLexem _type);
+	
 };
+
+
+
 
 
 class HashTable
 {
 private:
-	static const int default_size = 8;
+	static const int default_size = 100;
 	double rehash_size = 0.75;
-	Node** arr;
-	int size;//размер массива без учёта удаленных ячеек
-	int buf_size;//размер самого массива (всей таблицы)
-	int full_size;
+	Token** arr;
+	int size;
+	int count;
 
-
+	int HashFunctionHorner(const std::string& s, int table_size);
 public:
     HashTable();
     ~HashTable();
 
     void ResizeHashTable();
-    void ReHash();
 
-    bool Find(std::string& value, const HashFunction1& hash1 = HashFunction1(), const HashFunction2& hash2 = HashFunction2());
-    bool Remove(std::string& value, const HashFunction1& hash1 = HashFunction1(), const HashFunction2& hash2 = HashFunction2());
-    bool Add(std::string& value, const HashFunction1& hash1 = HashFunction1(), const HashFunction2& hash2 = HashFunction2());
+    void Add(Token& add_token);
 
-	int GetId(std::string& value, const HashFunction1& hash1 = HashFunction1(), const HashFunction2& hash2 = HashFunction2());
-	bool ContainsId(int id) const;
-	std::string GetStringById(int id) const;
+	Token* Find(const std::string& lexema);
+
+	void Print();
+
+
 };
 
+std::string LexTypeToString(TypeLexem type);

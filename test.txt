@@ -1,1 +1,15 @@
-main(){+
+A = 5;
+int main(){
+
+	int A = 0;
+	 switch (A)
+    {
+    case 0:
+        A = 1;
+        break;
+    case 1:
+        A = 4;
+        break;
+
+    }
+}

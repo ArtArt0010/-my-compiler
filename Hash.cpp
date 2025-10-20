@@ -1,264 +1,8 @@
 #include "Hash.h"
 
-HashTable::HashTable()
+int HashTable::HashFunctionHorner(const std::string& s, int table_size)
 {
-    buf_size = default_size;
-    size = 0;
-    full_size = 0;
-    arr = new Node * [buf_size];
-    for (int i = 0; i < buf_size; ++i) {
-        arr[i] = nullptr;
-    }
-}
-
-HashTable::~HashTable()
-{
-    for (int i = 0; i < buf_size; ++i) {
-        if (arr[i]) {
-            delete arr[i];
-        }
-
-    }
-    delete[] arr;
-}
-
-void HashTable::ResizeHashTable()
-{
-    int last_buf_size = buf_size;
-
-    buf_size *= 2;
-    full_size = 0;
-    size = 0;
-
-    Node** tmp_arr = new Node * [buf_size];
-    for (int i = 0; i < buf_size; ++i) {
-        tmp_arr[i] = nullptr;
-    }
-
-    std::swap(arr, tmp_arr);
-
-    for (int i = 0; i < last_buf_size; ++i) {
-        if (tmp_arr[i] && !tmp_arr[i]->deletFlag) {
-       
-            Add(tmp_arr[i]->value);
-        }
-    }
-
-    for (int i = 0; i < last_buf_size; ++i) {
-        if (tmp_arr[i]) {
-            delete tmp_arr[i];
-        }
-        
-    }
-    delete[] tmp_arr;
-}
-
-void HashTable::ReHash()
-{
-    full_size = 0;
-    size = 0;
-    Node** tmp_arr = new Node * [buf_size];
-
-    for (int i = 0; i < buf_size; ++i) {
-        tmp_arr[i] = nullptr;
-    }
-    std::swap(arr, tmp_arr);
-
-    for (int i = 0; i < buf_size; ++i) {
-        if (tmp_arr[i] && !tmp_arr[i]->deletFlag) {
-
-            Add(tmp_arr[i]->value);
-        }
-    }
-
-    for (int i = 0; i < buf_size; ++i) {
-        if (tmp_arr[i]) {
-            delete tmp_arr[i];
-        }
-
-    }
-    delete[] tmp_arr;
-}
-
-bool HashTable::Find(std::string& value, const HashFunction1& hash1, const HashFunction2& hash2)
-{
-    int pos = hash1(value, buf_size);//позиция
-    int step = hash2(value, buf_size);//шаг
-    int i = 0;
-
-    while (arr[pos] != nullptr && i < buf_size) {
-
-        if (arr[pos]->value == value && !arr[pos]->deletFlag) {
-            return true;
-        }
-        pos = (pos + step) % buf_size;
-        ++i;
-
-    }
-    return false;
-}
-
-bool HashTable::Remove(std::string& value, const HashFunction1& hash1, const HashFunction2& hash2)
-{
-    int pos = hash1(value, buf_size);//позиция
-    int step = hash2(value, buf_size);//шаг
-    int i = 0;
-
-    while (arr[pos] != nullptr && i < buf_size) {
-
-        if (arr[pos]->value == value && !arr[pos]->deletFlag) {
-            arr[pos]->deletFlag = true;
-            --size;
-            return true;
-        }
-        pos = (pos + step) % buf_size;
-        ++i;
-
-    }
-    return false;
-}
-
-bool HashTable::Add(std::string& value, const HashFunction1& hash1, const HashFunction2& hash2)
-{
-    if (size + 1 > int(rehash_size * buf_size)) {
-        ResizeHashTable();
-    }
-    else if (full_size > 2*size) {
-        ReHash();//слишком много deleted элементов. нужен рехeш
-    }
-
-    int pos = hash1(value, buf_size);//позиция
-    int step = hash2(value, buf_size);//шаг
-    int i = 0;
-
-    int first_delet = -1;//первый удалённый элемент
-
-    while (arr[pos] != nullptr && i < buf_size) {
-
-        if (arr[pos]->value == value && !arr[pos]->deletFlag) {
-            return false;//проверка на существование элемента
-        }
-
-        if (arr[pos]->deletFlag && first_delet == -1) {//если в этом месте нет элемента
-            first_delet = pos;
-        }
-
-        pos = (pos + step) % buf_size;
-        ++i;
-    }
-    //если нет места создаём новый Node
-    if (first_delet == -1) {
-        arr[pos] = new Node(value);
-        ++full_size;
-    }
-    else {
-        arr[first_delet]->value = value;
-        arr[first_delet]->deletFlag = false;
-    }
-    ++size;
-
-
-    return true;
-}
-int HashTable::GetId(std::string& value, const HashFunction1& hash1, const HashFunction2& hash2)
-{
-    int pos = hash1(value, buf_size);
-    int step = hash2(value, buf_size);
-    int start_pos = pos;
-
-    // Ищем строку в таблице
-    for (int i = 0; i < buf_size; ++i) {
-        if (arr[pos] == nullptr) {
-            break; 
-        }
-
-        if (!arr[pos]->deletFlag && arr[pos]->value == value) {
-            return pos;
-        }
-
-        pos = (pos + step) % buf_size;
-        if (pos == start_pos) {
-            break;
-        }
-    }
-    return -1;
-}
-
-// Проверка существования ID
-bool HashTable::ContainsId(int id) const
-{
-    return (id >= 0 && id < buf_size &&
-        arr[id] != nullptr &&
-        !arr[id]->deletFlag);
-}
-
-std::string HashTable::GetStringById(int id) const
-{
-    if (ContainsId(id)) {
-        return arr[id]->value;
-    }
-    return "";
-}
-
-//bool HashTable::Add(std::string& value, const HashFunction1& hash1, const HashFunction2& hash2)
-//{
-//    // Проверяем необходимость рехеширования
-//    if (size + 1 > int(rehash_size * buf_size)) {
-//        ResizeHashTable();
-//    }
-//    else if (full_size > 2 * size) {
-//        ReHash(); // слишком много deleted элементов
-//    }
-//
-//    int pos = hash1(value, buf_size); // позиция
-//    int step = hash2(value, buf_size); // шаг
-//    int start_pos = pos; // запоминаем начальную позицию
-//    int first_delet = -1; // первый удалённый элемент
-//
-//    // Ищем место для вставки
-//    for (int i = 0; i < buf_size; ++i) {
-//        if (arr[pos] == nullptr) {
-//            // Нашли пустую ячейку - можно вставлять
-//            break;
-//        }
-//
-//        if (!arr[pos]->deletFlag && arr[pos]->value == value) {
-//            return false; // элемент уже существует
-//        }
-//
-//        if (arr[pos]->deletFlag && first_delet == -1) {
-//            first_delet = pos; // запоминаем первую удаленную ячейку
-//        }
-//
-//        pos = (pos + step) % buf_size;
-//
-//        // Если прошли полный круг
-//        if (pos == start_pos) {
-//            break;
-//        }
-//    }
-//
-//    // Вставляем элемент
-//    if (first_delet != -1) {
-//        // Используем удаленную ячейку
-//        arr[first_delet]->value = value;
-//        arr[first_delet]->deletFlag = false;
-//        ++size;
-//        return true;
-//    }
-//    else if (arr[pos] == nullptr) {
-//        // Используем пустую ячейку
-//        arr[pos] = new Node(value);
-//        ++size;
-//        ++full_size;
-//        return true;
-//    }
-//
-//    // Нет места (теоретически не должно происходить после рехеширования)
-//    return false;
-//}
-int HashFunctionHorner(const std::string& s, int table_size, const int key)
-{
+    const int key = 31;
     int hash_result = 0;
     for (int i = 0; i != s.size(); ++i)
         hash_result = (key * hash_result + s[i]) % table_size;
@@ -266,12 +10,130 @@ int HashFunctionHorner(const std::string& s, int table_size, const int key)
     return hash_result;
 }
 
-int HashFunction1::operator()(const std::string& s, int table_size) const
+HashTable::HashTable()
 {
-    return HashFunctionHorner(s, table_size, table_size - 1); // ключи должны быть взаимопросты, используем числа <размер таблицы> плюс и минус один.
+    size = default_size;
+    count = 0;
+
+    arr = new Token * [size];
+    for (int i = 0; i < size; ++i) {
+        arr[i] = nullptr;
+    }
 }
 
-int HashFunction2::operator()(const std::string& s, int table_size) const
+HashTable::~HashTable()
 {
-    return HashFunctionHorner(s, table_size, table_size + 1);
+    for (int i = 0; i < size; ++i) {
+        Token* current = arr[i];
+        while (current != nullptr) {
+            Token* temp = current;
+            current = current->next;
+            delete temp;
+        }
+    }
+    delete[] arr;
+}
+
+void HashTable::ResizeHashTable()
+{
+    int new_size = size*2;
+
+
+
+    Token** newArr = new Token* [new_size];
+
+    for (int i = 0; i < new_size; ++i) {
+        newArr[i] = nullptr;
+    }
+
+   
+    for (int i = 0; i < size; ++i) {
+        Token* tmp = arr[i];
+        while (tmp != nullptr) {
+            Token* next = tmp->next;
+            int id = HashFunctionHorner(tmp->lexema, new_size);
+            tmp->next = newArr[id];
+            newArr[id] = tmp;
+            tmp = next;
+        }
+        arr[i] = nullptr;
+    }
+    delete[] arr;
+    arr = newArr;
+    size = new_size;
+}
+
+
+
+
+
+void HashTable::Add(Token& add_token)
+{
+ 
+    if (count + 1 > static_cast<int>(rehash_size * size)) {
+        ResizeHashTable();
+    }
+  
+    int id = HashFunctionHorner(add_token.lexema, size);
+    Token* tmp = arr[id];
+    while (tmp != nullptr) {
+        if (tmp->lexema == add_token.lexema) {
+            return;
+        }
+        tmp = tmp->next;
+    }
+
+    
+    Token* new_token = new Token(add_token);
+    new_token->next = arr[id];
+    arr[id] = new_token;
+    count++;
+   
+}
+Token* HashTable::Find(const std::string& lexema) {
+    int id = HashFunctionHorner(lexema, size);
+    Token* tmp = arr[id];
+    while (tmp) {
+        if (tmp->lexema == lexema)
+            return tmp;
+        tmp = tmp->next;
+    }
+    return nullptr;
+}
+
+void HashTable::Print() {
+    std::cout << "\n--- Hash Table ---\n";
+    for (int i = 0; i < size; ++i) {
+        if (arr[i]) {
+            std::cout << "[" << i << "]: ";
+            Token* tmp = arr[i];
+            while (tmp) {
+                std::cout <<"type lexem: "<< LexTypeToString(tmp->type)<<" | " << tmp->lexema << " -> ";
+                tmp = tmp->next;
+            }
+            std::cout << "NULL\n";
+        }
+    }
+    std::cout << "------------------\n";
+}
+
+std::string LexTypeToString(TypeLexem type)
+{
+    switch (type)
+    {
+    case TypeLexem::Type:        return "Type";
+    case TypeLexem::Id:     return "Id";
+    case TypeLexem::Const:     return "Const";
+    case TypeLexem::Op:          return "Op";
+    case TypeLexem::SEPARATOR:   return "Separator";
+    case TypeLexem::UNKNOWN:     return "Unknown";
+    case TypeLexem::Operators: return "Optrator";
+    default:                     return "???";
+    }
+}
+
+Token::Token(std::string lex, TypeLexem _type)
+{
+    lexema = lex;
+    type = _type;
 }

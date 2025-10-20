@@ -32,9 +32,10 @@ void Lexer::Analyz()
 
 	State state;
 	while(in.get(c)) {
-		if (c == ' ') {
+		if (c == ' ' or c == '\n' or c == '\t') {
 			if (!lex.empty()) {
 				Token token(lex, typeLexem(lex));
+				tableTokens.Add(token);
 				lex.clear();
 			}
 			continue;
@@ -43,17 +44,20 @@ void Lexer::Analyz()
 		if (isOperator(c) || isSeparator(c)) {
 			if (!lex.empty()) {
 				Token token(lex, typeLexem(lex));
+				tableTokens.Add(token);
 				lex.clear();
 			}
 			if (isOperator(c)) {
 				lex += c;
-				Token token(lex, TypeLexem::Op);
+				Token token(lex, TypeLexem::Operators);
+				tableTokens.Add(token);
 				lex.clear();
 			}
 			else
 			{
 				lex += c;
 				Token token(lex, TypeLexem::SEPARATOR);
+				tableTokens.Add(token);
 				lex.clear();
 			}
 			continue;
@@ -66,6 +70,7 @@ void Lexer::Analyz()
 	
 	if (!lex.empty()) {
 		Token token(lex, TypeLexem::SEPARATOR);
+		tableTokens.Add(token);
 		lex.clear();
 	}
 
@@ -108,23 +113,25 @@ TypeLexem Lexer::typeLexem(std::string lex)
 	{
 
 	case State::IN_IDENTIFIER:
-
-		if (isKeyWord(lex)) {
+		if (lex == "int") {
 			return TypeLexem::Type;
 		}
+		else if (isKeyWord(lex)) {
+			return TypeLexem::Op;
+		}
 		else {
-			return TypeLexem::id_name;
+			return TypeLexem::Id;
 		}
 		break;
 
 	case State::IN_NUMBER:
 
-		return TypeLexem::int_num;
+		return TypeLexem::Const;
 
 		break;
 	case State::IN_OPERATOR:
 
-		return TypeLexem::Op;
+		return TypeLexem::Operators;
 
 		break;
 	case State::DONE:
@@ -149,8 +156,7 @@ TypeLexem Lexer::typeLexem(std::string lex)
 
 bool Lexer::isKeyWord(const std::string& lexem) {
 	std::vector<std::string> keywords = {
-		"Function", "Begin", "End", "Descriptions", "Operators",
-		"int", "return", "switch", "case", "break"
+		"return", "switch", "case", "break"
 	};
 
 	for (const auto& keyword : keywords) {
@@ -163,8 +169,10 @@ bool Lexer::isKeyWord(const std::string& lexem) {
 bool Lexer::isOperator(char c)
 {
 	std::string operators = "=+-*/<>!";
-	if (operators.find(c) != std::string::npos) {
-		return operators.find(c);
+	for (int i = 0; i < operators.size(); i++) {
+		if (c == operators[i]) {
+			return true;
+		}
 	}
 	return false;
 }
@@ -217,8 +225,9 @@ State Lexer::HandleState(char c)
 
 }
 
-Token::Token(std::string lex, TypeLexem _type)
+void Lexer::print()
 {
-	lexema = lex;
-	type = _type;
+	tableTokens.Print();
 }
+
+

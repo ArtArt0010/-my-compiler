@@ -3,10 +3,6 @@
 #include<fstream>
 #include<vector>
 
-enum class TypeLexem
-{
-	Function, Begin, End, FunctionName, Descriptions, Operators, Descr, VarList, Type, Op, Options, SimpleExpr, Id, Const, int_num, id_name, SEPARATOR, UNKNOWN
-};
 
 enum class State {
 	START,          // начальное состояние
@@ -16,12 +12,7 @@ enum class State {
 	DONE            // завершил
 };
 
-struct Token
-{
-	TypeLexem type;
-	std::string lexema;
-	Token(std::string lex, TypeLexem _type);
-};
+
 
 
 class Lexer
@@ -32,8 +23,6 @@ private:
 
 	HashTable tableTokens;
 
-	HashFunction1 hash1;
-	HashFunction2 hash2;
 
 
 public:
@@ -51,7 +40,7 @@ public:
 	State Number(char c);
 	State HandleState(char c);
 
-
+	void print();
 	
 };
 
