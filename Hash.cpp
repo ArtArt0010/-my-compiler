@@ -138,9 +138,9 @@ std::string LexTypeToString(TypeLexem type)
     switch (type)
     {
     case TypeLexem::IDENTIFIER:        return "ID";
-    case TypeLexem::KEYWORD:     return "Kw";
+    case TypeLexem::KEYWORD:     return "KeyWords";
     case TypeLexem::NUMBER:     return "Const";
-    case TypeLexem::OPERATOR:          return "Op";
+    case TypeLexem::OPERATOR:          return "Operator";
     case TypeLexem::SEPARATOR:   return "Separator";
     case TypeLexem::UNKNOWN:     return "Unknown";
     default:                     return "???";
