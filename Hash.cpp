@@ -121,19 +121,26 @@ std::string LexTypeToString(TypeLexem type)
 {
     switch (type)
     {
-    case TypeLexem::Type:        return "Type";
-    case TypeLexem::Id:     return "Id";
-    case TypeLexem::Const:     return "Const";
-    case TypeLexem::Op:          return "Op";
+    case TypeLexem::IDENTIFIER:        return "ID";
+    case TypeLexem::KEYWORD:     return "Kw";
+    case TypeLexem::NUMBER:     return "Num";
+    case TypeLexem::OPERATOR:          return "Op";
     case TypeLexem::SEPARATOR:   return "Separator";
     case TypeLexem::UNKNOWN:     return "Unknown";
-    case TypeLexem::Operators: return "Optrator";
     default:                     return "???";
     }
+}
+
+Token::Token()
+{
+    lexema = "";
+    type = TypeLexem::UNKNOWN;
+    next = nullptr;
 }
 
 Token::Token(std::string lex, TypeLexem _type)
 {
     lexema = lex;
     type = _type;
+    next = nullptr;
 }

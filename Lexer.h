@@ -3,13 +3,13 @@
 #include<fstream>
 #include<vector>
 
+enum TypeChar
+{
+	LETTER, DIGIT, UNDERSCORE, OP, SEP, WS, OTHER, NUM_CLASSES
+};
 
-enum class State {
-	START,          // начальное состояние
-	IN_IDENTIFIER,  // читаем идентификатор
-	IN_NUMBER,      // читаем число
-	IN_OPERATOR,    // читаем оператор
-	DONE            // завершил
+enum State {
+	START, ID, NUM, OP_STATE, SEP_STATE, ERR, NUM_STATES
 };
 
 
@@ -23,7 +23,19 @@ private:
 
 	HashTable tableTokens;
 
+	State t_Table[NUM_STATES][NUM_CLASSES] = {
 
+		 { ID,     NUM,   ID,    OP_STATE,  SEP_STATE,  START,    ERR },
+		 { ID,     ID,    ID,    ERR,       ERR,        START,    ERR },
+		 { ERR,    NUM,   ERR,   ERR,       ERR,        START,    ERR },
+		 { ERR,    ERR,   ERR,   OP_STATE,  ERR,        START,    ERR },
+		 { ERR,    ERR,   ERR,   ERR,       ERR,        START,    ERR },
+		 { ERR,    ERR,   ERR,   ERR,       ERR,        ERR,      ERR }
+	};
+
+	bool isKeyWord(const std::string& lexem);
+	bool isOperator(char c);
+	bool isSeparator(char c);
 
 public:
 	Lexer(std::string name_file);
@@ -31,11 +43,15 @@ public:
 
 	std::string readLex();
 	void Analyz();
+	
+	TypeChar isTypeChar(char c);
+
+
+
+
 	TypeLexem typeLexem(std::string lex);
 
-	bool isKeyWord(const std::string& lexem);
-	bool isOperator(char c);
-	bool isSeparator(char c);
+	
 	State Ident(char c);
 	State Number(char c);
 	State HandleState(char c);

@@ -4,7 +4,7 @@
 
 enum class TypeLexem
 {
-	Function, Begin, End, FunctionName, Descriptions, Operators, Descr, VarList, Type, Op, Options, SimpleExpr, Id, Const, int_num, id_name, SEPARATOR, UNKNOWN
+	IDENTIFIER, NUMBER, OPERATOR, SEPARATOR, KEYWORD, UNKNOWN
 };
 
 struct Token
@@ -12,6 +12,7 @@ struct Token
 	TypeLexem type;
 	std::string lexema;
 	Token* next;
+	Token();
 	Token(std::string lex, TypeLexem _type);
 	
 };

@@ -30,133 +30,96 @@ void Lexer::Analyz()
 	std::ifstream in(nameFile);
 	char c;
 
-	State state;
+	State state = START;
 	while(in.get(c)) {
-		if (c == ' ' or c == '\n' or c == '\t') {
+		
+		TypeChar type_char = isTypeChar(c);
+		State next_State = t_Table[state][type_char];
+		
+		if (next_State == ERR or next_State == START) {
 			if (!lex.empty()) {
-				Token token(lex, typeLexem(lex));
+
+				Token token;
+				token.lexema = lex;
+
+				switch (state)
+				{
+				case ID:
+					if (isKeyWord(lex)) {
+						token.type = TypeLexem::KEYWORD;
+					}
+					else {
+						token.type = TypeLexem::IDENTIFIER;
+					}
+					break;
+				case NUM:
+					token.type = TypeLexem::NUMBER;
+					break;
+				case OP_STATE:
+					token.type = TypeLexem::OPERATOR;
+					break;
+				case SEP_STATE:
+					token.type = TypeLexem::SEPARATOR;
+					break;
+				default:
+					break;
+				}
+
 				tableTokens.Add(token);
 				lex.clear();
+
 			}
-			continue;
+			if (isspace(c)) {
+				state = START;
+				continue;
+			}
+			state = START;
+			type_char = isTypeChar(c);
+			next_State = t_Table[state][type_char];
+			
+		}
+		if (!isspace(c)) {
+			lex += c;
 		}
 
-		if (isOperator(c) || isSeparator(c)) {
-			if (!lex.empty()) {
-				Token token(lex, typeLexem(lex));
-				tableTokens.Add(token);
-				lex.clear();
-			}
-			if (isOperator(c)) {
-				lex += c;
-				Token token(lex, TypeLexem::Operators);
-				tableTokens.Add(token);
-				lex.clear();
-			}
-			else
-			{
-				lex += c;
-				Token token(lex, TypeLexem::SEPARATOR);
-				tableTokens.Add(token);
-				lex.clear();
-			}
-			continue;
-		}
-
-
-
-		lex += c;
-	}
-	
-	if (!lex.empty()) {
-		Token token(lex, TypeLexem::SEPARATOR);
-		tableTokens.Add(token);
-		lex.clear();
+		state = next_State;
 	}
 
-	
-}
+	}
 
-TypeLexem Lexer::typeLexem(std::string lex)
+
+TypeChar Lexer::isTypeChar(char c)
 {
-	State state;
+	if (isalpha(c)) {
+		return LETTER;
+	}
+	if (isdigit(c)) {
+		return DIGIT;
+	}
+	if (c == '_') {
+		return UNDERSCORE;
+	}
+	if (isOperator(c)) {
+		return OP;
+	}
+	if(isSeparator(c)) {
+		return SEP;
+	}
+	if (isspace(c)) {
+		return WS;	
+	}
+	return OTHER;
+}
+
+
 	
 
-	if (lex.empty()) {
-		return TypeLexem::UNKNOWN;
-	}
 
-	state = HandleState(lex[0]);
 
-	for (int i = 1; i < lex.size(); i++) {
-		switch (state)
-		{
-		case State::IN_IDENTIFIER:
-			state = Ident(lex[i]);
-			break;
-		case State::IN_NUMBER:
-			state = Number(lex[i]);
-			break;
-		case State::IN_OPERATOR:
-			state = State::DONE;
-			break;
-		default:
-			state = State::DONE;
-			break;
-		}
-		if (state == State::DONE) {
-			break;
-		}
-	}
-
-	switch (state)
-	{
-
-	case State::IN_IDENTIFIER:
-		if (lex == "int") {
-			return TypeLexem::Type;
-		}
-		else if (isKeyWord(lex)) {
-			return TypeLexem::Op;
-		}
-		else {
-			return TypeLexem::Id;
-		}
-		break;
-
-	case State::IN_NUMBER:
-
-		return TypeLexem::Const;
-
-		break;
-	case State::IN_OPERATOR:
-
-		return TypeLexem::Operators;
-
-		break;
-	case State::DONE:
-
-		if (lex.size() == 1) {
-			if (isOperator(lex[0])) {
-				return TypeLexem::Op;
-			}
-			else if (isSeparator(lex[0])) {
-				return TypeLexem::SEPARATOR;
-			}
-		}
-		return TypeLexem::UNKNOWN;
-
-		break;
-	default:
-		return TypeLexem::UNKNOWN;
-		break;
-	}
-
-}
 
 bool Lexer::isKeyWord(const std::string& lexem) {
 	std::vector<std::string> keywords = {
-		"return", "switch", "case", "break"
+		"int","return", "switch", "case", "break"
 	};
 
 	for (const auto& keyword : keywords) {
@@ -188,42 +151,8 @@ bool Lexer::isSeparator(char c)
 	return false;
 }
 
-State Lexer::Ident(char c)
-{
-	if (std::isalnum(c) || c == '_') {
-		return State::IN_IDENTIFIER;
-	}
-	return State::DONE;
-}
 
-State Lexer::Number(char c)
-{
-	if (std::isdigit(c)) {
-		return State::IN_NUMBER;
-	}
-	return State::DONE;
-}
 
-State Lexer::HandleState(char c)
-{
-
-	if (std::isalpha(c) || c == '_') {
-		return State::IN_IDENTIFIER;
-	}
-	else if (std::isdigit(c)) {
-		return State::IN_NUMBER;
-	}
-	else if (isOperator(c)) {
-		return State::IN_OPERATOR;
-	}
-	else if (isSeparator(c)) {
-		return State::DONE;
-	}
-	else {
-		return State::DONE;
-	}
-
-}
 
 void Lexer::print()
 {
