@@ -1,5 +1,10 @@
-int main(){
-
+012
+int main(B){
+intg
+bd2
+012
+12v
+@ # $
 	int A = 0;
 	 switch (A)
     {

@@ -31,9 +31,13 @@ void Lexer::Analyz()
 	char c;
 
 	State state = START;
+	bool flag_Id = true;
 	while(in.get(c)) {
 		
 		TypeChar type_char = isTypeChar(c);
+		if (type_char == TypeChar::DIGIT && state == State::ID) {
+			flag_Id = false;
+		}
 		State next_State = t_Table[state][type_char];
 		
 		if (next_State == ERR or next_State == START) {
@@ -45,15 +49,28 @@ void Lexer::Analyz()
 				switch (state)
 				{
 				case ID:
-					if (isKeyWord(lex)) {
-						token.type = TypeLexem::KEYWORD;
+					if (!flag_Id) {
+						token.type = TypeLexem::UNKNOWN;
+						
+						flag_Id = true;
 					}
 					else {
-						token.type = TypeLexem::IDENTIFIER;
+						if (isKeyWord(lex)) {
+							token.type = TypeLexem::KEYWORD;
+						}
+						else {
+							token.type = TypeLexem::IDENTIFIER;
+						}
 					}
+					
 					break;
 				case NUM:
-					token.type = TypeLexem::NUMBER;
+					if (lex[0] == '0' && lex.size()>1) {
+						token.type = TypeLexem::UNKNOWN;
+					}
+					else {
+						token.type = TypeLexem::NUMBER;
+					}
 					break;
 				case OP_STATE:
 					token.type = TypeLexem::OPERATOR;
@@ -96,9 +113,7 @@ TypeChar Lexer::isTypeChar(char c)
 	if (isdigit(c)) {
 		return DIGIT;
 	}
-	if (c == '_') {
-		return UNDERSCORE;
-	}
+	
 	if (isOperator(c)) {
 		return OP;
 	}

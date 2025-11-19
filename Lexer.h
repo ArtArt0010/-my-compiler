@@ -5,7 +5,7 @@
 
 enum TypeChar
 {
-	LETTER, DIGIT, UNDERSCORE, OP, SEP, WS, OTHER, NUM_CLASSES
+	LETTER, DIGIT, OP, SEP, WS, OTHER, NUM_CLASSES
 };
 
 enum State {
@@ -25,12 +25,12 @@ private:
 
 	State t_Table[NUM_STATES][NUM_CLASSES] = {
 
-		 { ID,     NUM,   ID,    OP_STATE,  SEP_STATE,  START,    ERR },
-		 { ID,     ID,    ID,    ERR,       ERR,        START,    ERR },
-		 { ERR,    NUM,   ERR,   ERR,       ERR,        START,    ERR },
-		 { ERR,    ERR,   ERR,   OP_STATE,  ERR,        START,    ERR },
-		 { ERR,    ERR,   ERR,   ERR,       ERR,        START,    ERR },
-		 { ERR,    ERR,   ERR,   ERR,       ERR,        ERR,      ERR }
+		 { ID,     NUM,    OP_STATE,  SEP_STATE,  START,    ERR }, //start
+		 { ID,     ID,    ERR,       ERR,        START,    ERR }, //id
+		 { ERR,    NUM,   ERR,       ERR,        START,    ERR },//num
+		 { ERR,    ERR,   OP_STATE,  ERR,        START,    ERR },//op
+		 { ERR,    ERR,  ERR,       ERR,        START,    ERR },//sep
+		 { ERR,    ERR,   ERR,       ERR,        ERR,      ERR }//err
 	};
 
 	bool isKeyWord(const std::string& lexem);

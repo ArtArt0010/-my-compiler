@@ -1,6 +1,6 @@
 #include "Hash.h"
 
-int HashTable::HashFunctionHorner(const std::string& s, int table_size)
+int HashTable::HashFunction(const std::string& s, int table_size)
 {
     const int key = 31;
     int hash_result = 0;
@@ -15,7 +15,7 @@ HashTable::HashTable()
     size = default_size;
     count = 0;
 
-    arr = new Token * [size];
+    arr = new Token* [size];
     for (int i = 0; i < size; ++i) {
         arr[i] = nullptr;
     }
@@ -51,7 +51,7 @@ void HashTable::ResizeHashTable()
         Token* tmp = arr[i];
         while (tmp != nullptr) {
             Token* next = tmp->next;
-            int id = HashFunctionHorner(tmp->lexema, new_size);
+            int id = HashFunction(tmp->lexema, new_size);
             tmp->next = newArr[id];
             newArr[id] = tmp;
             tmp = next;
@@ -74,7 +74,7 @@ void HashTable::Add(Token& add_token)
         ResizeHashTable();
     }
   
-    int id = HashFunctionHorner(add_token.lexema, size);
+    int id = HashFunction(add_token.lexema, size);
     Token* tmp = arr[id];
     while (tmp != nullptr) {
         if (tmp->lexema == add_token.lexema) {
@@ -91,7 +91,7 @@ void HashTable::Add(Token& add_token)
    
 }
 Token* HashTable::Find(const std::string& lexema) {
-    int id = HashFunctionHorner(lexema, size);
+    int id = HashFunction(lexema, size);
     Token* tmp = arr[id];
     while (tmp) {
         if (tmp->lexema == lexema)

@@ -31,7 +31,7 @@ private:
 	int size;
 	int count;
 
-	int HashFunctionHorner(const std::string& s, int table_size);
+	int HashFunction(const std::string& s, int table_size);
 public:
     HashTable();
     ~HashTable();
