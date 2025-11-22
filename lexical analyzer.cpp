@@ -1,11 +1,12 @@
 ﻿#include <iostream>
 
 #include"Lexer.h"
-
+#include"Syntactic analyzer.h"
 using namespace std;
 int main()
 {
-    Lexer Lex("test.txt");
+    SyntacticAnalzer parser;
+    Lexer Lex("test.txt", parser);
     
     Lex.Analyz();
     Lex.print();

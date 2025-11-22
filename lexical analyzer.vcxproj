@@ -130,10 +130,12 @@
     <ClCompile Include="Hash.cpp" />
     <ClCompile Include="Lexer.cpp" />
     <ClCompile Include="lexical analyzer.cpp" />
+    <ClCompile Include="Syntactic analyzer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Hash.h" />
     <ClInclude Include="Lexer.h" />
+    <ClInclude Include="Syntactic analyzer.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="output.txt" />

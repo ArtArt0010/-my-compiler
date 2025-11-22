@@ -90,6 +90,7 @@ void HashTable::Add(Token& add_token)
     count++;
    
 }
+
 Token* HashTable::Find(const std::string& lexema) {
     int id = HashFunction(lexema, size);
     Token* tmp = arr[id];
@@ -131,6 +132,13 @@ void HashTable::print_file(std::string file_name)
            
         }
     }
+}
+
+int HashTable::FindHash(Token& token)
+{
+    int id = HashFunction(token.lexema, size);
+  
+    return id;
 }
 
 std::string LexTypeToString(TypeLexem type)

@@ -32,6 +32,7 @@ private:
 	int count;
 
 	int HashFunction(const std::string& s, int table_size);
+	
 public:
     HashTable();
     ~HashTable();
@@ -45,6 +46,8 @@ public:
 	void Print();
 
 	void print_file(std::string file_name);
+
+	int FindHash(Token& token);
 	
 };
 

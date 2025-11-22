@@ -2,6 +2,7 @@
 #include"Hash.h"
 #include<fstream>
 #include<vector>
+#include"Syntactic analyzer.h"
 
 enum TypeChar
 {
@@ -37,12 +38,13 @@ private:
 	bool isOperator(char c);
 	bool isSeparator(char c);
 
+	SyntacticAnalzer& parser;
 public:
-	Lexer(std::string name_file);
+	Lexer(std::string name_file, SyntacticAnalzer& p);
 	~Lexer();
 
 	std::string readLex();
-	void Analyz();
+	void Analyz();	
 	
 	TypeChar isTypeChar(char c);
 
