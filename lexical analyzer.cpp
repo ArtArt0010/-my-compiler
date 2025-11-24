@@ -9,8 +9,11 @@ int main()
     Lexer Lex("test.txt", parser);
     
     Lex.Analyz();
-    Lex.print();
+    Node* root = parser.parse();
+   // Lex.print();
+    parser.printTree(root);
     Lex.print_file("output.txt");
+    
    
 
 }

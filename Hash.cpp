@@ -141,6 +141,13 @@ int HashTable::FindHash(Token& token)
     return id;
 }
 
+Token HashTable::FindByHash(int hash)
+{
+    Token* tmp = arr[hash];
+    
+    return *tmp;
+}
+
 std::string LexTypeToString(TypeLexem type)
 {
     switch (type)

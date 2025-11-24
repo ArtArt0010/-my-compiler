@@ -12,8 +12,9 @@ struct Node
 class SyntacticAnalzer
 {
 private:
-	std::vector<int> set_of_hashes;
-	HashTable* table = nullptr;
+	std::vector<Token> set_of_hashes;
+
+	
 	int pos = 0;
 public:
 	SyntacticAnalzer() = default;
@@ -21,13 +22,17 @@ public:
 	~SyntacticAnalzer();
 
 
-	void push_hash_tokens(int hahs);
-	void getHashTable(HashTable& tableTokens);
+	void push_hash_tokens(Token t);
+	
 
 	Node* parse();
 private:
-	char currentHash();
-	char nextHash();
+	Token currentToken();
+	void nextToken();
+	bool testMatch(std::string lexema);
+	bool testMatchType(TypeLexem t);
+	Token exists(std::string lexema);
+	Token existsType(TypeLexem t);
 
 	Node* parseFunction();
 	Node* parseBegin();
@@ -40,7 +45,7 @@ private:
 	Node* parseExpr();
 	Node* parseSimpleExpr();
 	Node* parseTerm();
-
-
+public:
+	void printTree(Node* node, int indent = 0);
 };
 

@@ -21,7 +21,7 @@ std::string Lexer::readLex()
 
 void Lexer::Analyz()
 {
-	parser.getHashTable(tableTokens);
+	
 	
 	std::string separators = " ,();{}";
 	std::string lex;
@@ -82,7 +82,7 @@ void Lexer::Analyz()
 
 				tableTokens.Add(token);
 				//Parser.push_hash_tokens(tableTokens.FindHash(token));
-				parser.push_hash_tokens(tableTokens.FindHash(token));
+				parser.push_hash_tokens(token);
 				lex.clear();
 
 			}

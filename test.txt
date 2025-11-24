@@ -1,10 +1,5 @@
-012
-int main(B){
-intg
-bd2
-012
-12v
-@ # $
+int main()
+{
 	int A = 0;
 	 switch (A)
     {
@@ -16,4 +11,5 @@ bd2
         break;
 
     }
+
 }

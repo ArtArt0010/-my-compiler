@@ -49,6 +49,8 @@ public:
 
 	int FindHash(Token& token);
 	
+	Token FindByHash(int hash);
+	
 };
 
 std::string LexTypeToString(TypeLexem type);
