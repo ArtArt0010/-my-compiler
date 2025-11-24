@@ -128,9 +128,9 @@ Node* SyntacticAnalzer::parseDescr()
 {
 	Node* node = new Node("Descr");
 
-	// Тип переменной
+	
 	Node* typeNode = new Node("Type");
-	typeNode->child.push_back(new Node(currentToken().lexema)); // 'int'
+	typeNode->child.push_back(new Node(currentToken().lexema)); 
 	exists("int");
 	node->child.push_back(typeNode);
 
@@ -143,36 +143,6 @@ Node* SyntacticAnalzer::parseDescr()
 }
 
 
-//Node* SyntacticAnalzer::parseVarList()
-//{
-//	Node* node = new Node("VarList");
-//
-//	while (true) {
-//		
-//		Token id = existsType(TypeLexem::IDENTIFIER);
-//
-//		
-//		Node* varNode = new Node("Id:" + id.lexema);
-//
-//		
-//		if (testMatch("=")) {
-//			exists("=");
-//			varNode->child.push_back(parseExpr());
-//		}
-//
-//		node->child.push_back(varNode);
-//
-//		
-//		if (testMatch(",")) {
-//			exists(",");
-//		}
-//		else {
-//			break;
-//		}
-//	}
-//
-//	return node;
-//}
 
 Node* SyntacticAnalzer::parseVarList()
 {
@@ -183,12 +153,12 @@ Node* SyntacticAnalzer::parseVarList()
 		Node* idNode = new Node("Id:" + id.lexema);
 
 		if (testMatch("=")) {
-			Token eq = exists("=");            // отдельный узел "="
+			Token eq = exists("=");            
 			Node* eqNode = new Node(eq.lexema);
 			Node* exprNode = parseExpr();
 
-			idNode->child.push_back(eqNode);   // "=" как ребёнок Id
-			idNode->child.push_back(exprNode); // выражение
+			idNode->child.push_back(eqNode);   
+			idNode->child.push_back(exprNode); 
 		}
 
 		node->child.push_back(idNode);
