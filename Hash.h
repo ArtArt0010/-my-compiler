@@ -5,7 +5,7 @@
 
 enum class TypeLexem
 {
-	IDENTIFIER, NUMBER, OPERATOR, SEPARATOR, KEYWORD, UNKNOWN
+	IDENTIFIER, NUMBER, OPERATOR, SEPARATOR, KEYWORD, UNKNOWN, END
 };
 
 struct Token
@@ -13,8 +13,16 @@ struct Token
 	TypeLexem type;
 	std::string lexema;
 	Token* next;
+	int line;
+	int col;
+
 	Token();
 	Token(std::string lex, TypeLexem _type);
+
+	void line_position(int line_, int col_) {
+		line = line_;
+		col = col_;
+	}
 	
 };
 

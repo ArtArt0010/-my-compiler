@@ -30,8 +30,25 @@ void Lexer::Analyz()
 
 	State state = START;
 	bool flag_Id = true;
+	
+	int line = 1;
+	int col = 0;
+	int start_col = 0;
+
 	while(in.get(c)) {
+		if (c == '\n') {
+			line++;
+			col = 0;
+			continue;
+		}
+
+		col++;  
+
 		
+		if (lex.empty() && !isspace(c)) {
+			start_col = col;
+		}
+
 		TypeChar type_char = isTypeChar(c);
 		if (type_char == TypeChar::DIGIT && state == State::ID) {
 			flag_Id = false;
@@ -80,8 +97,9 @@ void Lexer::Analyz()
 					break;
 				}
 
+				token.line_position(line, start_col);
 				tableTokens.Add(token);
-				//Parser.push_hash_tokens(tableTokens.FindHash(token));
+				
 				parser.push_hash_tokens(token);
 				lex.clear();
 
@@ -101,6 +119,47 @@ void Lexer::Analyz()
 
 		state = next_State;
 	}
+
+
+
+	if (!lex.empty()) {
+		Token tok;
+		tok.lexema = lex;
+
+		switch (state)
+		{
+		case ID:
+			if (!flag_Id)
+				tok.type = TypeLexem::UNKNOWN;
+			else if (isKeyWord(lex))
+				tok.type = TypeLexem::KEYWORD;
+			else
+				tok.type = TypeLexem::IDENTIFIER;
+			break;
+
+		case NUM:
+			tok.type = TypeLexem::NUMBER;
+			break;
+
+		case OP_STATE:
+			tok.type = TypeLexem::OPERATOR;
+			break;
+
+		case SEP_STATE:
+			tok.type = TypeLexem::SEPARATOR;
+			break;
+
+		default:
+			tok.type = TypeLexem::UNKNOWN;
+		}
+
+		tok.line_position(line, start_col);
+		tableTokens.Add(tok);
+		parser.push_hash_tokens(tok);
+	}
+
+	
+
 
 	}
 

@@ -12,17 +12,30 @@ Node* SyntacticAnalzer::parse()
 	pos = 0;
 	Node* root = parseFunction();
 	if (pos != set_of_hashes.size()) {
-		std::cout << "Syntax error\n";
+		Token t = set_of_hashes[pos];
+		throw std::runtime_error(
+			"Syntax error at line " + std::to_string(t.line) +
+			", col " + std::to_string(t.col) +
+			": unexpected token '" + t.lexema + "'"
+		);
 	}
+
 	return root;
 }
 
 Token SyntacticAnalzer::currentToken()
 {
 	if (pos >= set_of_hashes.size()) {
-		return Token("EOF", TypeLexem::UNKNOWN);
+		return Token("ERR", TypeLexem::UNKNOWN);
 	}
+
 	Token t = set_of_hashes[pos];
+
+	if (t.type == TypeLexem::UNKNOWN) {
+		throw std::runtime_error("Syntax error at line " + std::to_string(t.line) + ", col " + std::to_string(t.col) + ": unknown lexeme '" + t.lexema + "'");
+	}
+
+	
 	return t;
 
 }
@@ -43,13 +56,16 @@ bool SyntacticAnalzer::testMatchType(TypeLexem t)
 }
 
 
-Token SyntacticAnalzer::exists(std::string lexema)
+Token SyntacticAnalzer::exists( std::string lexema)
 {
 	Token t = currentToken();
 	if (!testMatch(lexema)) {
-		std::cout << "Syntax error: expected '" << lexema
-			<< "', but received '" << t.lexema << "'\n";
-		
+		throw std::runtime_error(
+			"Syntax error at line " + std::to_string(t.line) +
+			", col " + std::to_string(t.col) +
+			": expected '" + lexema +
+			"'"
+		);
 	}
 	nextToken();
 	return t;
@@ -59,16 +75,16 @@ Token SyntacticAnalzer::existsType(TypeLexem tType)
 {
 	Token t = currentToken();
 	if (!testMatchType(tType)) {
-		std::cout << "Syntax error: expected type "
-			<< LexTypeToString(tType)
-			<< ", but received type "
-			<< LexTypeToString(t.type)
-			<< " ('" << t.lexema << "')\n";
-		
+		throw std::runtime_error(
+			"Syntax error at line " + std::to_string(t.line) +
+			", col " + std::to_string(t.col) +
+			": expected type " + LexTypeToString(tType)
+		);
 	}
 	nextToken();
 	return t;
 }
+
 
 
 
@@ -207,19 +223,27 @@ Node* SyntacticAnalzer::parseOp()
 		return node;
 	}
 
-
 	Token id = existsType(TypeLexem::IDENTIFIER);
-	Node* idNode = new Node("Id:" + id.lexema);
 
-	Token eq = exists("=");                  
+	if (!testMatch("=")) {
+		throw std::runtime_error(
+			"Syntax error at line " + std::to_string(currentToken().line) +
+			", col " + std::to_string(currentToken().col) +
+			": unexpected identifier '" + id.lexema + "', expected assignment '='"
+		);
+	}
+
+	Node* idNode = new Node("Id:" + id.lexema);
+	Token eq = exists("=");
 	Node* eqNode = new Node(eq.lexema);
 
 	Node* expr = parseExpr();
 	exists(";");
 
+	idNode->child.push_back(eqNode);
+	idNode->child.push_back(expr);
 	node->child.push_back(idNode);
-	node->child.push_back(eqNode);
-	node->child.push_back(expr);
+
 
 	return node;
 }
@@ -303,7 +327,7 @@ Node* SyntacticAnalzer::parseTerm()
 		return e;
 	}
 
-	std::cout<<"Expected termenal, received: " + currentToken().lexema; 
+	throw std::runtime_error("Expected termenal in line " + std::to_string(currentToken().line) + " , col " + std::to_string(currentToken().col));
 }
 
 void SyntacticAnalzer::printTree(Node* node, int indent)
@@ -332,6 +356,37 @@ void SyntacticAnalzer::printTokens()
 	std::cout << "Tokens (" << set_of_hashes.size() << "):\n";
 	for (size_t i = 0; i < set_of_hashes.size(); ++i) {
 		std::cout << i << ": '" << set_of_hashes[i].lexema << "' type=" << LexTypeToString(set_of_hashes[i].type) << "\n";
+	}
+}
+
+void SyntacticAnalzer::printTreeFile(Node* node)
+{
+	std::ofstream out(file_output_name);
+	save_in_file(out, node);
+	
+}
+
+
+
+void SyntacticAnalzer::setFileName(std::string file_name)
+{
+	file_output_name = file_name;
+}
+
+void SyntacticAnalzer::save_in_file(std::ofstream& out, Node* node, int indent)
+{
+	if (!node) return;
+
+
+	for (int i = 0; i < indent; i++)
+		out << "  ";
+
+
+	out << node->netermenal << "\n";
+
+
+	for (auto child : node->child) {
+		save_in_file(out, child, indent + 1);
 	}
 }
 

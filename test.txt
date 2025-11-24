@@ -1,7 +1,7 @@
 int main(){
-    int A = 0;
-    int A, b, c = 3;
-    switch (A)
+   int  A = 5;
+   int A, b, c = 3;
+    switch (d)
     {
         case 0:
             A = 1;
@@ -12,5 +12,3 @@ int main(){
     }
     return A;
 }
-
-
