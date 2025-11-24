@@ -1,15 +1,16 @@
-int main()
-{
-	int A = 0;
-	 switch (A)
+int main(){
+    int A = 0;
+    int A, b, c = 3;
+    switch (A)
     {
-    case 0:
-        A = 1;
-        break;
-    case 1:
-        A = 4;
-        break;
-
+        case 0:
+            A = 1;
+            break;
+        case 1:
+            A = 4;
+            break;
     }
-
+    return A;
 }
+
+

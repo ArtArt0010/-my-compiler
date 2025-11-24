@@ -18,7 +18,6 @@ private:
 	int pos = 0;
 public:
 	SyntacticAnalzer() = default;
-//	SyntacticAnalzer(HashTable& table):_table(table){}
 	~SyntacticAnalzer();
 
 
@@ -47,5 +46,6 @@ private:
 	Node* parseTerm();
 public:
 	void printTree(Node* node, int indent = 0);
+	void printTokens();
 };
 

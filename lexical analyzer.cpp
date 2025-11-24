@@ -11,6 +11,7 @@ int main()
     Lex.Analyz();
     Node* root = parser.parse();
    // Lex.print();
+   // parser.printTokens();
     parser.printTree(root);
     Lex.print_file("output.txt");
     
