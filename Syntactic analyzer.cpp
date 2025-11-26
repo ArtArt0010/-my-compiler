@@ -15,9 +15,12 @@ Node* SyntacticAnalzer::parse()
 		Token t = set_of_hashes[pos];
 		throw std::runtime_error(
 			"Syntax error at line " + std::to_string(t.line) +
-			", col " + std::to_string(t.col) +
+			", element " + std::to_string(t.element) +
 			": unexpected token '" + t.lexema + "'"
 		);
+		/*std::cout << "Syntax error at line " + std::to_string(t.line) +
+			", element " + std::to_string(t.element) +
+			": unexpected token '" + t.lexema + "'";*/
 	}
 
 	return root;
@@ -32,7 +35,10 @@ Token SyntacticAnalzer::currentToken()
 	Token t = set_of_hashes[pos];
 
 	if (t.type == TypeLexem::UNKNOWN) {
-		throw std::runtime_error("Syntax error at line " + std::to_string(t.line) + ", col " + std::to_string(t.col) + ": unknown lexeme '" + t.lexema + "'");
+		throw std::runtime_error("Syntax error at line " + std::to_string(t.line) + ", col " + std::to_string(t.element) + ": unknown lexeme '" + t.lexema + "'");
+		//std::cout << "Syntax error at line " + std::to_string(t.line) + ", col " + std::to_string(t.element) + ": unknown lexeme '" + t.lexema + "'";
+		//nextToken();
+		//currentToken();
 	}
 
 	
@@ -62,10 +68,14 @@ Token SyntacticAnalzer::exists( std::string lexema)
 	if (!testMatch(lexema)) {
 		throw std::runtime_error(
 			"Syntax error at line " + std::to_string(t.line) +
-			", col " + std::to_string(t.col) +
+			", element " + std::to_string(t.element) +
 			": expected '" + lexema +
 			"'"
 		);
+		/*std::cout << "Syntax error at line " + std::to_string(t.line) +
+			", element " + std::to_string(t.element) +
+			": expected '" + lexema +
+			"'\n";*/
 	}
 	nextToken();
 	return t;
@@ -77,9 +87,12 @@ Token SyntacticAnalzer::existsType(TypeLexem tType)
 	if (!testMatchType(tType)) {
 		throw std::runtime_error(
 			"Syntax error at line " + std::to_string(t.line) +
-			", col " + std::to_string(t.col) +
+			", element " + std::to_string(t.element) +
 			": expected type " + LexTypeToString(tType)
 		);
+		/*std::cout << "Syntax error at line " + std::to_string(t.line) +
+			", element " + std::to_string(t.element) +
+			": expected type " + LexTypeToString(tType)+"\n";*/
 	}
 	nextToken();
 	return t;
@@ -168,14 +181,14 @@ Node* SyntacticAnalzer::parseVarList()
 		Token id = existsType(TypeLexem::IDENTIFIER);
 		Node* idNode = new Node("Id:" + id.lexema);
 
-		if (testMatch("=")) {
+		/*if (testMatch("=")) {
 			Token eq = exists("=");            
 			Node* eqNode = new Node(eq.lexema);
 			Node* exprNode = parseExpr();
 
 			idNode->child.push_back(eqNode);   
 			idNode->child.push_back(exprNode); 
-		}
+		}*/
 
 		node->child.push_back(idNode);
 
@@ -228,9 +241,12 @@ Node* SyntacticAnalzer::parseOp()
 	if (!testMatch("=")) {
 		throw std::runtime_error(
 			"Syntax error at line " + std::to_string(currentToken().line) +
-			", col " + std::to_string(currentToken().col) +
+			", element " + std::to_string(currentToken().element) +
 			": unexpected identifier '" + id.lexema + "', expected assignment '='"
 		);
+		/*std::cout << "Syntax error at line " + std::to_string(currentToken().line) +
+			", element " + std::to_string(currentToken().element) +
+			": unexpected identifier '" + id.lexema + "', expected assignment '='";*/
 	}
 
 	Node* idNode = new Node("Id:" + id.lexema);
@@ -265,7 +281,7 @@ Node* SyntacticAnalzer::parseOptions()
 
 
 		while (
-			testMatchType(TypeLexem::IDENTIFIER) ||
+			testMatchType(TypeLexem::IDENTIFIER) or
 			testMatch("switch")
 			) {
 			caseNode->child.push_back(parseOp());
@@ -285,12 +301,14 @@ Node* SyntacticAnalzer::parseExpr()
 		std::string op = currentToken().lexema;
 		exists(op);
 		Node* right = parseTerm();
-		Node* newNode = new Node(op);
+		Node* newNode = new Node("Expr:  "+ op);
 		newNode->child.push_back(node);
 		newNode->child.push_back(right);
 		node = newNode;
 	}
 	return node;
+
+
 }
 
 
@@ -327,7 +345,8 @@ Node* SyntacticAnalzer::parseTerm()
 		return e;
 	}
 
-	throw std::runtime_error("Expected termenal in line " + std::to_string(currentToken().line) + " , col " + std::to_string(currentToken().col));
+	throw std::runtime_error("Expected termenal in line " + std::to_string(currentToken().line) + " , element " + std::to_string(currentToken().element));
+	//std::cout << "Expected termenal in line " + std::to_string(currentToken().line) + " , element " + std::to_string(currentToken().element) + "\n";
 }
 
 void SyntacticAnalzer::printTree(Node* node, int indent)
@@ -389,6 +408,8 @@ void SyntacticAnalzer::save_in_file(std::ofstream& out, Node* node, int indent)
 		save_in_file(out, child, indent + 1);
 	}
 }
+
+
 
 
 

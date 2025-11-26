@@ -32,21 +32,21 @@ void Lexer::Analyz()
 	bool flag_Id = true;
 	
 	int line = 1;
-	int col = 0;
-	int start_col = 0;
+	int element = 0;
+	int start_element = 0;
 
 	while(in.get(c)) {
 		if (c == '\n') {
 			line++;
-			col = 0;
+			element = 0;
 			continue;
 		}
 
-		col++;  
+		element++;  
 
 		
 		if (lex.empty() && !isspace(c)) {
-			start_col = col;
+			start_element = element;
 		}
 
 		TypeChar type_char = isTypeChar(c);
@@ -97,7 +97,7 @@ void Lexer::Analyz()
 					break;
 				}
 
-				token.line_position(line, start_col);
+				token.line_position(line, start_element);
 				tableTokens.Add(token);
 				
 				parser.push_hash_tokens(token);
@@ -153,7 +153,7 @@ void Lexer::Analyz()
 			tok.type = TypeLexem::UNKNOWN;
 		}
 
-		tok.line_position(line, start_col);
+		tok.line_position(line, start_element);
 		tableTokens.Add(tok);
 		parser.push_hash_tokens(tok);
 	}

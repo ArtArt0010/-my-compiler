@@ -14,14 +14,14 @@ struct Token
 	std::string lexema;
 	Token* next;
 	int line;
-	int col;
+	int element;
 
 	Token();
 	Token(std::string lex, TypeLexem _type);
 
 	void line_position(int line_, int col_) {
 		line = line_;
-		col = col_;
+		element = col_;
 	}
 	
 };

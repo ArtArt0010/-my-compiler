@@ -56,5 +56,6 @@ public:
 	void setFileName(std::string file_name);
 private:
 	void save_in_file(std::ofstream& out, Node* node, int indent = 0);
+	
 };
 
