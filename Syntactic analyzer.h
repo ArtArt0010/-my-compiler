@@ -2,12 +2,7 @@
 #include"Hash.h"
 #include<vector>
 #include <fstream>
-struct Node
-{
-	std::string netermenal;
-	std::vector<Node*> child;
-	Node(const std::string& l) : netermenal(l) {}
-};
+#include "additionale_struct.h"
 
 class SyntacticAnalzer
 {

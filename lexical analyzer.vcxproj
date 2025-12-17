@@ -129,12 +129,15 @@
   <ItemGroup>
     <ClCompile Include="Hash.cpp" />
     <ClCompile Include="Lexer.cpp" />
-    <ClCompile Include="lexical analyzer.cpp" />
+    <ClCompile Include="main_ analyzer.cpp" />
+    <ClCompile Include="Semantic_analyzer.cpp" />
     <ClCompile Include="Syntactic analyzer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="additionale_struct.h" />
     <ClInclude Include="Hash.h" />
     <ClInclude Include="Lexer.h" />
+    <ClInclude Include="Semantic_analyzer.h" />
     <ClInclude Include="Syntactic analyzer.h" />
   </ItemGroup>
   <ItemGroup>

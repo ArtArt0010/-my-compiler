@@ -1,8 +1,9 @@
 int main(){
-   int  A;
+   int A;
    int a, b, g;
    int c;
    c = 3;
+   q = 6 + c;
     switch (c)
     {
         case 0:

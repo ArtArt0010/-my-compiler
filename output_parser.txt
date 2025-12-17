@@ -1,2 +1,53 @@
-
-Syntax error at line 10, element 26: expected ')'
+Function
+  Begin
+    FunctionName:main
+  Descriptions
+    Descr
+      Type
+        int
+      VarList
+        Id:A
+    Descr
+      Type
+        int
+      VarList
+        Id:a
+        Id:b
+        Id:g
+    Descr
+      Type
+        int
+      VarList
+        Id:c
+  Operators
+    Op
+      Id:c
+        =
+        Const:3
+    Op
+      Id:q
+        =
+        Expr:  +
+          Const:6
+          Id:c
+    Op
+      switch
+        Id:c
+        Options
+          Case:0
+            Op
+              Id:A
+                =
+                Expr:  +
+                  Const:5
+                  Expr:  -
+                    Id:b
+                    Const:1
+          Case:1
+            Op
+              Id:A
+                =
+                Const:4
+  End
+    return
+    Id:A
