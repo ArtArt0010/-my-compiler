@@ -24,6 +24,7 @@ private:
 	void checkDoubleCase(Node* node);
 
 	void postfix(Node* root);
+	
 
 public:
 	Semantic();
@@ -32,4 +33,5 @@ public:
 
 	void analyz_start(Node* root);
 	void print_postfix(Node* root);
+
 };

@@ -27,8 +27,9 @@ Function
     Op
       Id:q
         =
-        Expr:  +
+        Expr:
           Const:6
+          +
           Id:c
     Op
       switch
@@ -38,16 +39,26 @@ Function
             Op
               Id:A
                 =
-                Expr:  +
-                  Const:5
-                  Expr:  -
+                Expr:
+                  Expr:
+                    Const:5
+                    +
                     Id:b
-                    Const:1
+                  -
+                  Const:1
           Case:1
             Op
               Id:A
                 =
                 Const:4
+          Case:2
+            Op
+              Id:d
+                =
+                Expr:
+                  Id:g
+                  +
+                  Const:2
   End
     return
     Id:A

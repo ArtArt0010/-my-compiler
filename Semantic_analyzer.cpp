@@ -1,4 +1,4 @@
-#include "Semantic_analyzer.h"
+﻿#include "Semantic_analyzer.h"
 
 void Semantic::check_advertisement(Node* root)
 {
@@ -92,35 +92,96 @@ void Semantic::print_postfix(Node* root)
 	std::cout <<"\n\n\n"<< postfix_str;
 }
 
+
+
 void Semantic::postfix(Node* root)
 {
-	if (root->netermenal == "int") {
-		postfix_str += "int ";
+	if (root == nullptr) return;
+
+	
+
+	if (root->netermenal == "Op") {
+
+		if (root->child[0]->netermenal == "switch") {
+			Node* sw = root->child[0];
+			Node* opt = sw->child[1];
+
+			for (int i = 0; i < opt->child.size(); i++) {
+				Node* c = opt->child[i];
+				if (i > 0) {
+					postfix_str += "m" + std::to_string(i) + " DEFL ";
+				}
+
+				postfix(sw->child[0]); 
+				postfix_str += c->netermenal.substr(5) + " == ";
+
+				if (i != opt->child.size() - 1) {
+					postfix_str += "m" + std::to_string(i + 1) + " BF ";
+				}
+
+				for (int j = 0; j < c->child.size(); j++) {
+					postfix(c->child[j]);
+				}
+				
+				postfix_str += "\n";
+			}
+
+
+			return;
+		}
+
+		Node* id = root->child[0];
+		
+		postfix_str += id->netermenal.substr(3) + " ";
+		postfix(id->child[1]);
+		postfix_str += "= \n";
+
+		return;
 	}
+
+
+
+
+	if (root->netermenal == "Expr:") {
+		postfix(root->child[0]);          
+		postfix(root->child[2]);     
+		postfix_str += root->child[1]->netermenal + " ";
+
+
+		return;
+	}
+
+
+	if (root->netermenal.find("Id:") != std::string::npos) {
+		postfix_str += root->netermenal.substr(3) + " ";
+		return;
+	}
+
+
+	if (root->netermenal.find("Const:") != std::string::npos) {
+		postfix_str += root->netermenal.substr(6) + " ";
+		return;
+	}
+
+
+	
+
+
 	if (root->netermenal == "VarList") {
 		for (int i = 0; i < root->child.size(); i++) {
 			postfix_str += root->child[i]->netermenal.substr(3) + " ";
 		}
-		postfix_str +=  "DECL\n";
+		postfix_str += "DECL\n";
+		return;
 	}
-	std::stack<std::string > n;
-	std::stack<std::string > op;
-	std::string buf;
-	if (root->netermenal == "Id:") {
-		for (int i = 0; i < root->child.size(); i++) {
-			Node* tmp = root->child[i];
-			if (tmp->netermenal == "=") {
-				n.push(root->netermenal.substr(3));
-				op.push("=");
-				
-			}
-		}
-	}
-	
+
+
 	for (int i = 0; i < root->child.size(); i++) {
 		postfix(root->child[i]);
 	}
 }
+
+
 
 
 

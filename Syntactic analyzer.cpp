@@ -301,8 +301,12 @@ Node* SyntacticAnalzer::parseExpr()
 		std::string op = currentToken().lexema;
 		exists(op);
 		Node* right = parseTerm();
-		Node* newNode = new Node("Expr:  "+ op);
+		Node* op_node = new Node(op);
+		Node* newNode = new Node("Expr:");
+
+		
 		newNode->child.push_back(node);
+		newNode->child.push_back(op_node);
 		newNode->child.push_back(right);
 		node = newNode;
 	}
