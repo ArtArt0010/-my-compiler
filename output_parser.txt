@@ -21,16 +21,23 @@ Function
         Id:c
   Operators
     Op
-      Id:c
-        =
-        Const:3
-    Op
-      Id:q
+      Id:a
         =
         Expr:
-          Const:6
+          Id:A
           +
-          Id:c
+          Id:g
+    Op
+      Id:c
+        =
+        Const:1
+    Op
+      Id:z
+        =
+        Expr:
+          Id:a
+          +
+          Const:8
     Op
       switch
         Id:c
@@ -42,9 +49,9 @@ Function
                 Expr:
                   Expr:
                     Const:5
-                    +
+                    -
                     Id:b
-                  -
+                  +
                   Const:1
           Case:1
             Op
@@ -53,12 +60,12 @@ Function
                 Const:4
           Case:2
             Op
-              Id:d
+              Id:A
                 =
                 Expr:
                   Id:g
-                  +
-                  Const:2
+                  -
+                  Const:9
   End
     return
     Id:A

@@ -40,6 +40,8 @@ void Semantic::check_advertisement(Node* root)
 	for (int i = 0; i < root->child.size(); i++) {
 		check_advertisement(root->child[i]);
 	}
+
+	
 }
 
 
@@ -89,7 +91,8 @@ void Semantic::analyz_start(Node* root)
 void Semantic::print_postfix(Node* root)
 {
 	postfix(root);
-	std::cout <<"\n\n\n"<< postfix_str;
+	//std::cout << "\n\n\n" << postfix_str;
+	std::cout <<"\n\n\n"<< postfix_str.substr(0 , postfix_str.size()-2);
 }
 
 
@@ -115,17 +118,19 @@ void Semantic::postfix(Node* root)
 				postfix(sw->child[0]); 
 				postfix_str += c->netermenal.substr(5) + " == ";
 
-				if (i != opt->child.size() - 1) {
-					postfix_str += "m" + std::to_string(i + 1) + " BF ";
-				}
+				postfix_str += "m" + std::to_string(i + 1) + " BF ";
+				
 
 				for (int j = 0; j < c->child.size(); j++) {
 					postfix(c->child[j]);
 				}
+				postfix_str.pop_back();
+				postfix_str += "m" + std::to_string(opt->child.size()) + " BRL ";
+
 				
 				postfix_str += "\n";
 			}
-
+			postfix_str += "m" + std::to_string(opt->child.size()) + " DEFL \n";
 
 			return;
 		}
@@ -168,13 +173,17 @@ void Semantic::postfix(Node* root)
 
 
 	if (root->netermenal == "VarList") {
+		postfix_str += "int ";
 		for (int i = 0; i < root->child.size(); i++) {
 			postfix_str += root->child[i]->netermenal.substr(3) + " ";
 		}
-		postfix_str += "DECL\n";
+		postfix_str += std::to_string(root->child.size()+1) + " DECL\n";
 		return;
 	}
 
+	if (root->netermenal == "End") {
+
+	}
 
 	for (int i = 0; i < root->child.size(); i++) {
 		postfix(root->child[i]);

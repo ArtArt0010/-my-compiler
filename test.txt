@@ -2,18 +2,19 @@ int main(){
    int A;
    int a, b, g;
    int c;
-   c = 3;
-   q = 6 + c;
+   a = A + g;
+   c = 1;
+   z = a + 8;
     switch (c)
     {
         case 0:
-            A = 5 + b - 1;
+            A = 5 - b + 1;
             break;
         case 1:
             A = 4;
             break;
         case 2:
-            d = g + 2;
+            A = g - 9;
             break;
     }
     return A;

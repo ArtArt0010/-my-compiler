@@ -22,6 +22,7 @@ int main(){
         parser.setFileName("output_parser.txt");
         parser.printTree(root);
         parser.printTreeFile(root);
+        std::cout << "\n\n";
         Sem.analyz_start(root);
         Sem.print_postfix(root);
     }

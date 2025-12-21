@@ -19,6 +19,7 @@ private:
 	std::string postfix_str = "";
 	std::set<std::string> announced;
 
+
 	void check_advertisement(Node* root);
 
 	void checkDoubleCase(Node* node);
