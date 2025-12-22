@@ -52,5 +52,6 @@
     <Text Include="test.txt" />
     <Text Include="output.txt" />
     <Text Include="output_parser.txt" />
+    <Text Include="output_semantic.txt" />
   </ItemGroup>
 </Project>

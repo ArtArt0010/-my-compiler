@@ -13,6 +13,7 @@ void Semantic::check_advertisement(Node* root)
 						std::string n = tmp->child[j]->netermenal.substr(3);
 						if (announced.find(n) != announced.end()) {
 							std::cout << "Error double!"<<n<<"\n";
+							error_str += "Error double! " + n + "\n";
 						}
 						else {
 							announced.insert(n);
@@ -29,6 +30,7 @@ void Semantic::check_advertisement(Node* root)
 		std::string n = root->netermenal.substr(3);
 		if (announced.find(n) == announced.end()) {
 			std::cout << "Error not announced! " << n << "\n";
+			error_str += "Error not announced! " + n + "\n";
 		}
 	}
 	if (root->netermenal == "switch") {
@@ -66,6 +68,7 @@ void Semantic::checkDoubleCase(Node* node)
 			std::string n = opt->child[i]->netermenal.substr(5);
 			if (set_case.find(n) != set_case.end()) {
 				std::cout << "Error: duplicate case " << n << "\n";
+				error_str += "Error: duplicate case " + n + "\n";
 			}
 			else {
 				set_case.insert(n);
@@ -90,9 +93,12 @@ void Semantic::analyz_start(Node* root)
 
 void Semantic::print_postfix(Node* root)
 {
+	std::ofstream out("output_semantic.txt");
 	postfix(root);
 	//std::cout << "\n\n\n" << postfix_str;
 	std::cout <<"\n\n\n"<< postfix_str.substr(0 , postfix_str.size()-2);
+	out << error_str;
+	out<< "\n\n\n" << postfix_str.substr(0, postfix_str.size() - 2);
 }
 
 

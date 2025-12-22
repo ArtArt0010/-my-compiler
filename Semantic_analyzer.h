@@ -5,17 +5,13 @@
 #include<vector>
 #include<iostream>
 #include<stack>
-struct Attributs
-{
-	std::string type;
-	std::string val;
-	bool init;
-};
+#include<fstream>
 
 
 class Semantic
 {
 private:
+	std::string error_str = "";
 	std::string postfix_str = "";
 	std::set<std::string> announced;
 

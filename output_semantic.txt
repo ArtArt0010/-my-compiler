@@ -1,0 +1,14 @@
+Error not announced! z
+
+
+
+int A 2 DECL
+int a b g 4 DECL
+int c 2 DECL
+a A g + = 
+c 1 = 
+z a 8 + = 
+c 0 == m1 BF A 5 b - 1 + = m3 BRL 
+m1 DEFL c 1 == m2 BF A 4 = m3 BRL 
+m2 DEFL c 2 == m3 BF A g 9 - = m3 BRL 
+m3 DEFL 
