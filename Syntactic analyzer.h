@@ -3,26 +3,28 @@
 #include<vector>
 #include <fstream>
 #include "additionale_struct.h"
+#include "Lexer.h"
 
-class SyntacticAnalzer
+class SyntacticAnalyzer
 {
 private:
-	std::vector<Token> set_of_hashes;
 	std::string file_output_name;
-	
+	Lexer* lexer;
+	Token current;
 	int pos = 0;
 public:
-	SyntacticAnalzer() = default;
-	~SyntacticAnalzer();
+	SyntacticAnalyzer(Lexer& L);
+	~SyntacticAnalyzer();
 
 
-	void push_hash_tokens(Token t);
+	
 	
 
 	Node* parse();
 private:
 	Token currentToken();
 	void nextToken();
+
 	bool testMatch(std::string lexema);
 	bool testMatchType(TypeLexem t);
 	Token exists(std::string lexema);
@@ -44,7 +46,6 @@ private:
 
 public:
 	void printTree(Node* node, int indent = 0);
-	void printTokens();
 	void printTreeFile(Node* node);
 	
 	

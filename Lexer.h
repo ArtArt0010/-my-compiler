@@ -1,8 +1,7 @@
 #pragma once
 #include"Hash.h"
 #include<fstream>
-#include<vector>
-#include"Syntactic analyzer.h"
+#include"additionale_struct.h"
 
 enum TypeChar
 {
@@ -19,10 +18,24 @@ enum State {
 class Lexer
 {
 private:
+	
 	std::string nameFile;
 	std::string current_lex;
 
 	HashTable tableTokens;
+
+	std::ifstream in;
+	State state = START;
+	bool flag_Id = true;
+
+	int line = 1;
+	int element = 0;
+	int start_element = 0;
+
+	char buffer;
+	bool flag_buff = false;
+
+	std::string separators = " ,();{}";
 
 	State t_Table[NUM_STATES][NUM_CLASSES] = {
 
@@ -38,13 +51,13 @@ private:
 	bool isOperator(char c);
 	bool isSeparator(char c);
 
-	SyntacticAnalzer& parser;
+
 public:
-	Lexer(std::string name_file, SyntacticAnalzer& p);
+	Lexer(std::string name_file);
 	~Lexer();
 
-	std::string readLex();
-	void Analyz();	
+
+	Token Analyz_next();	
 	
 	TypeChar isTypeChar(char c);
 

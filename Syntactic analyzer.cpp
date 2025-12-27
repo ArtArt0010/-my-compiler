@@ -1,68 +1,55 @@
 #include "Syntactic analyzer.h"
 
-void SyntacticAnalzer::push_hash_tokens(Token t)
+
+
+
+Node* SyntacticAnalyzer::parse()
 {
-	set_of_hashes.push_back(t);
-}
-
-
-
-Node* SyntacticAnalzer::parse()
-{
-	pos = 0;
+	
 	Node* root = parseFunction();
-	if (pos != set_of_hashes.size()) {
-		Token t = set_of_hashes[pos];
+	if(current.type != TypeLexem::END){
 		throw std::runtime_error(
-			"Syntax error at line " + std::to_string(t.line) +
-			", element " + std::to_string(t.element) +
-			": unexpected token '" + t.lexema + "'"
+			"Syntax error at line " + std::to_string(current.line) +
+			", element " + std::to_string(current.element) +
+			": unexpected token '" + current.lexema + "'"
+			
 		);
-		/*std::cout << "Syntax error at line " + std::to_string(t.line) +
-			", element " + std::to_string(t.element) +
-			": unexpected token '" + t.lexema + "'";*/
 	}
 
 	return root;
 }
 
-Token SyntacticAnalzer::currentToken()
+Token SyntacticAnalyzer::currentToken()
 {
-	if (pos >= set_of_hashes.size()) {
-		return Token("ERR", TypeLexem::UNKNOWN);
-	}
+	
 
-	Token t = set_of_hashes[pos];
-
-	if (t.type == TypeLexem::UNKNOWN) {
-		throw std::runtime_error("Syntax error at line " + std::to_string(t.line) + ", col " + std::to_string(t.element) + ": unknown lexeme '" + t.lexema + "'");
-		//std::cout << "Syntax error at line " + std::to_string(t.line) + ", col " + std::to_string(t.element) + ": unknown lexeme '" + t.lexema + "'";
-		//nextToken();
-		//currentToken();
+	if (current.type == TypeLexem::UNKNOWN) {
+		throw std::runtime_error("Syntax error at line " + std::to_string(current.line) + ", col " + std::to_string(current.element) + ": unknown lexeme '" + current.lexema + "'");
+		
 	}
 
 	
-	return t;
+	return current;
 
 }
 
-void SyntacticAnalzer::nextToken()
+void SyntacticAnalyzer::nextToken()
 {
-	if (pos < set_of_hashes.size()) { pos++; }
+	current = lexer->Analyz_next();
 }
 
-bool SyntacticAnalzer::testMatch(std::string lexema)
+bool SyntacticAnalyzer::testMatch(std::string lexema)
 {
 	return currentToken().lexema == lexema;
 }
 
-bool SyntacticAnalzer::testMatchType(TypeLexem t)
+bool SyntacticAnalyzer::testMatchType(TypeLexem t)
 {
 	return currentToken().type == t;
 }
 
 
-Token SyntacticAnalzer::exists( std::string lexema)
+Token SyntacticAnalyzer::exists( std::string lexema)
 {
 	Token t = currentToken();
 	if (!testMatch(lexema)) {
@@ -72,16 +59,13 @@ Token SyntacticAnalzer::exists( std::string lexema)
 			": expected '" + lexema +
 			"'"
 		);
-		/*std::cout << "Syntax error at line " + std::to_string(t.line) +
-			", element " + std::to_string(t.element) +
-			": expected '" + lexema +
-			"'\n";*/
+
 	}
 	nextToken();
 	return t;
 }
 
-Token SyntacticAnalzer::existsType(TypeLexem tType)
+Token SyntacticAnalyzer::existsType(TypeLexem tType)
 {
 	Token t = currentToken();
 	if (!testMatchType(tType)) {
@@ -90,9 +74,7 @@ Token SyntacticAnalzer::existsType(TypeLexem tType)
 			", element " + std::to_string(t.element) +
 			": expected type " + LexTypeToString(tType)
 		);
-		/*std::cout << "Syntax error at line " + std::to_string(t.line) +
-			", element " + std::to_string(t.element) +
-			": expected type " + LexTypeToString(tType)+"\n";*/
+
 	}
 	nextToken();
 	return t;
@@ -101,7 +83,7 @@ Token SyntacticAnalzer::existsType(TypeLexem tType)
 
 
 
-Node* SyntacticAnalzer::parseFunction()
+Node* SyntacticAnalyzer::parseFunction()
 {
 	Node* node = new Node("Function");
 
@@ -128,7 +110,7 @@ Node* SyntacticAnalzer::parseFunction()
 }
 
 
-Node* SyntacticAnalzer::parseBegin()
+Node* SyntacticAnalyzer::parseBegin()
 {
 	Node* node = new Node("Begin");
 	exists("int");
@@ -141,7 +123,7 @@ Node* SyntacticAnalzer::parseBegin()
 	return node;
 }
 
-Node* SyntacticAnalzer::parseDescriptions()
+Node* SyntacticAnalyzer::parseDescriptions()
 {
 	Node* node = new Node("Descriptions");
 
@@ -153,7 +135,7 @@ Node* SyntacticAnalzer::parseDescriptions()
 }
 
 //int VarList
-Node* SyntacticAnalzer::parseDescr()
+Node* SyntacticAnalyzer::parseDescr()
 {
 	Node* node = new Node("Descr");
 
@@ -173,7 +155,7 @@ Node* SyntacticAnalzer::parseDescr()
 
 
 
-Node* SyntacticAnalzer::parseVarList()
+Node* SyntacticAnalyzer::parseVarList()
 {
 	Node* node = new Node("VarList");
 
@@ -181,14 +163,6 @@ Node* SyntacticAnalzer::parseVarList()
 		Token id = existsType(TypeLexem::IDENTIFIER);
 		Node* idNode = new Node("Id:" + id.lexema);
 
-		/*if (testMatch("=")) {
-			Token eq = exists("=");            
-			Node* eqNode = new Node(eq.lexema);
-			Node* exprNode = parseExpr();
-
-			idNode->child.push_back(eqNode);   
-			idNode->child.push_back(exprNode); 
-		}*/
 
 		node->child.push_back(idNode);
 
@@ -203,7 +177,7 @@ Node* SyntacticAnalzer::parseVarList()
 	return node;
 }
 
-Node* SyntacticAnalzer::parseOperators()
+Node* SyntacticAnalyzer::parseOperators()
 {
 	Node* node = new Node("Operators");
 
@@ -216,7 +190,7 @@ Node* SyntacticAnalzer::parseOperators()
 }
 
 
-Node* SyntacticAnalzer::parseOp()
+Node* SyntacticAnalyzer::parseOp()
 {
 	Node* node = new Node("Op");
 
@@ -244,9 +218,7 @@ Node* SyntacticAnalzer::parseOp()
 			", element " + std::to_string(currentToken().element) +
 			": unexpected identifier '" + id.lexema + "', expected assignment '='"
 		);
-		/*std::cout << "Syntax error at line " + std::to_string(currentToken().line) +
-			", element " + std::to_string(currentToken().element) +
-			": unexpected identifier '" + id.lexema + "', expected assignment '='";*/
+
 	}
 
 	Node* idNode = new Node("Id:" + id.lexema);
@@ -268,7 +240,7 @@ Node* SyntacticAnalzer::parseOp()
 
 
 
-Node* SyntacticAnalzer::parseOptions()
+Node* SyntacticAnalyzer::parseOptions()
 {
 	Node* node = new Node("Options");
 
@@ -294,7 +266,7 @@ Node* SyntacticAnalzer::parseOptions()
 
 	return node;
 }
-Node* SyntacticAnalzer::parseExpr()
+Node* SyntacticAnalyzer::parseExpr()
 {
 	Node* node = parseTerm();
 	while (testMatch("+") or testMatch("-")) {
@@ -316,7 +288,7 @@ Node* SyntacticAnalzer::parseExpr()
 }
 
 
-Node* SyntacticAnalzer::parseSimpleExpr()
+Node* SyntacticAnalyzer::parseSimpleExpr()
 {
 	Node* left = parseTerm();
 
@@ -330,7 +302,7 @@ Node* SyntacticAnalzer::parseSimpleExpr()
 
 	return left;
 }
-Node* SyntacticAnalzer::parseTerm()
+Node* SyntacticAnalyzer::parseTerm()
 {
 	if (testMatchType(TypeLexem::IDENTIFIER)) {
 		Token t = existsType(TypeLexem::IDENTIFIER);
@@ -350,10 +322,10 @@ Node* SyntacticAnalzer::parseTerm()
 	}
 
 	throw std::runtime_error("Expected termenal in line " + std::to_string(currentToken().line) + " , element " + std::to_string(currentToken().element));
-	//std::cout << "Expected termenal in line " + std::to_string(currentToken().line) + " , element " + std::to_string(currentToken().element) + "\n";
+	
 }
 
-void SyntacticAnalzer::printTree(Node* node, int indent)
+void SyntacticAnalyzer::printTree(Node* node, int indent)
 {
 	if (!node) return;
 
@@ -374,15 +346,8 @@ void SyntacticAnalzer::printTree(Node* node, int indent)
 
 
 
-void SyntacticAnalzer::printTokens()
-{
-	std::cout << "Tokens (" << set_of_hashes.size() << "):\n";
-	for (size_t i = 0; i < set_of_hashes.size(); ++i) {
-		std::cout << i << ": '" << set_of_hashes[i].lexema << "' type=" << LexTypeToString(set_of_hashes[i].type) << "\n";
-	}
-}
 
-void SyntacticAnalzer::printTreeFile(Node* node)
+void SyntacticAnalyzer::printTreeFile(Node* node)
 {
 	std::ofstream out(file_output_name);
 	save_in_file(out, node);
@@ -391,12 +356,12 @@ void SyntacticAnalzer::printTreeFile(Node* node)
 
 
 
-void SyntacticAnalzer::setFileName(std::string file_name)
+void SyntacticAnalyzer::setFileName(std::string file_name)
 {
 	file_output_name = file_name;
 }
 
-void SyntacticAnalzer::save_in_file(std::ofstream& out, Node* node, int indent)
+void SyntacticAnalyzer::save_in_file(std::ofstream& out, Node* node, int indent)
 {
 	if (!node) return;
 
@@ -419,4 +384,8 @@ void SyntacticAnalzer::save_in_file(std::ofstream& out, Node* node, int indent)
 
 
 
-SyntacticAnalzer::~SyntacticAnalzer() { }
+SyntacticAnalyzer::SyntacticAnalyzer(Lexer& L) : lexer(&L) {
+	current = lexer->Analyz_next();
+}
+
+SyntacticAnalyzer::~SyntacticAnalyzer() { }

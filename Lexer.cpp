@@ -1,6 +1,6 @@
 #include "Lexer.h"
 
-Lexer::Lexer(std::string name_file, SyntacticAnalzer& p): nameFile(name_file), parser(p){}
+Lexer::Lexer(std::string name_file): nameFile(name_file), in(name_file){}
 
 
 Lexer::~Lexer()
@@ -9,33 +9,30 @@ Lexer::~Lexer()
 	
 }
 
-std::string Lexer::readLex()
-{
-	std::string lex;
-	std::ifstream in(nameFile);
-	
-	in >> lex;
 
-	return lex;
-}
 
-void Lexer::Analyz()
+Token Lexer::Analyz_next()
 {
 	
 	
-	std::string separators = " ,();{}";
+	
 	std::string lex;
-	std::ifstream in(nameFile);
+	
 	char c;
 
-	State state = START;
-	bool flag_Id = true;
 	
-	int line = 1;
-	int element = 0;
-	int start_element = 0;
 
-	while(in.get(c)) {
+	while(true) {
+		if (flag_buff == true) {
+			c = buffer;
+			flag_buff = false;
+		}
+		else {
+			if (!in.get(c)) {
+				break;
+			}
+		}
+
 		if (c == '\n') {
 			line++;
 			element = 0;
@@ -99,9 +96,13 @@ void Lexer::Analyz()
 
 				token.line_position(line, start_element);
 				tableTokens.Add(token);
-				
-				parser.push_hash_tokens(token);
 				lex.clear();
+
+
+				buffer = c;
+				flag_buff = true;
+				return token;
+				
 
 			}
 			if (isspace(c)) {
@@ -155,11 +156,12 @@ void Lexer::Analyz()
 
 		tok.line_position(line, start_element);
 		tableTokens.Add(tok);
-		parser.push_hash_tokens(tok);
+
+		return tok;
 	}
 
 	
-
+	return Token(" ", TypeLexem::END);
 
 	}
 

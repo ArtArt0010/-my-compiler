@@ -15,7 +15,7 @@ HashTable::HashTable()
     size = default_size;
     count = 0;
 
-    arr = new Token* [size];
+    arr = new Token_node* [size];
     for (int i = 0; i < size; ++i) {
         arr[i] = nullptr;
     }
@@ -24,9 +24,9 @@ HashTable::HashTable()
 HashTable::~HashTable()
 {
     for (int i = 0; i < size; ++i) {
-        Token* current = arr[i];
+        Token_node* current = arr[i];
         while (current != nullptr) {
-            Token* temp = current;
+            Token_node* temp = current;
             current = current->next;
             delete temp;
         }
@@ -40,7 +40,7 @@ void HashTable::ResizeHashTable()
 
 
 
-    Token** newArr = new Token* [new_size];
+    Token_node** newArr = new Token_node * [new_size];
 
     for (int i = 0; i < new_size; ++i) {
         newArr[i] = nullptr;
@@ -48,10 +48,10 @@ void HashTable::ResizeHashTable()
 
    
     for (int i = 0; i < size; ++i) {
-        Token* tmp = arr[i];
+        Token_node* tmp = arr[i];
         while (tmp != nullptr) {
-            Token* next = tmp->next;
-            int id = HashFunction(tmp->lexema, new_size);
+            Token_node* next = tmp->next;
+            int id = HashFunction(tmp->token.lexema, new_size);
             tmp->next = newArr[id];
             newArr[id] = tmp;
             tmp = next;
@@ -75,28 +75,28 @@ void HashTable::Add(Token& add_token)
     }
   
     int id = HashFunction(add_token.lexema, size);
-    Token* tmp = arr[id];
+    Token_node* tmp = arr[id];
     while (tmp != nullptr) {
-        if (tmp->lexema == add_token.lexema) {
+        if (tmp->token.lexema == add_token.lexema) {
             return;
         }
         tmp = tmp->next;
     }
 
-    
-    Token* new_token = new Token(add_token);
-    new_token->next = arr[id];
-    arr[id] = new_token;
+    Token_node* n = new Token_node;
+    n->token = add_token;
+    n->next = arr[id];
+    arr[id] = n;
     count++;
    
 }
 
 Token* HashTable::Find(const std::string& lexema) {
     int id = HashFunction(lexema, size);
-    Token* tmp = arr[id];
+    Token_node* tmp = arr[id];
     while (tmp) {
-        if (tmp->lexema == lexema)
-            return tmp;
+        if (tmp->token.lexema == lexema)
+            return &tmp->token;
         tmp = tmp->next;
     }
     return nullptr;
@@ -107,9 +107,9 @@ void HashTable::Print() {
     for (int i = 0; i < size; ++i) {
         if (arr[i]) {
             std::cout << "[" << i << "]: ";
-            Token* tmp = arr[i];
+            Token_node* tmp = arr[i];
             while (tmp) {
-                std::cout <<"type lexem: "<< LexTypeToString(tmp->type)<<" | " << tmp->lexema << " -> ";
+                std::cout <<"type lexem: "<< LexTypeToString(tmp->token.type)<<" | " << tmp->token.lexema << " -> ";
                 tmp = tmp->next;
             }
             std::cout << "NULL\n";
@@ -124,9 +124,9 @@ void HashTable::print_file(std::string file_name)
     for (int i = 0; i < size; ++i) {
         if (arr[i]) {
             
-            Token* tmp = arr[i];
+            Token_node* tmp = arr[i];
             while (tmp) {
-                out << LexTypeToString(tmp->type) << " | " << tmp->lexema << " | "<< "[" << i << "]"<<"\n";
+                out << LexTypeToString(tmp->token.type) << " | " << tmp->token.lexema << " | "<< "[" << i << "]"<<"\n";
                 tmp = tmp->next;
             }
            
@@ -143,9 +143,9 @@ int HashTable::FindHash(Token& token)
 
 Token HashTable::FindByHash(int hash)
 {
-    Token* tmp = arr[hash];
+    Token_node* tmp = arr[hash];
     
-    return *tmp;
+    return tmp->token;
 }
 
 std::string LexTypeToString(TypeLexem type)
@@ -162,16 +162,4 @@ std::string LexTypeToString(TypeLexem type)
     }
 }
 
-Token::Token()
-{
-    lexema = "";
-    type = TypeLexem::UNKNOWN;
-    next = nullptr;
-}
 
-Token::Token(std::string lex, TypeLexem _type)
-{
-    lexema = lex;
-    type = _type;
-    next = nullptr;
-}

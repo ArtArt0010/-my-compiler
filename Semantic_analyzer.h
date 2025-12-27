@@ -2,9 +2,7 @@
 #include "additionale_struct.h"
 #include <string>
 #include <set>
-#include<vector>
 #include<iostream>
-#include<stack>
 #include<fstream>
 
 

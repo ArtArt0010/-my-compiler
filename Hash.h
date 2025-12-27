@@ -2,27 +2,15 @@
 #include<string>
 #include<iostream>
 #include<fstream>
+#include"additionale_struct.h"
 
-enum class TypeLexem
+
+
+struct Token_node
 {
-	IDENTIFIER, NUMBER, OPERATOR, SEPARATOR, KEYWORD, UNKNOWN, END
-};
-
-struct Token
-{
-	TypeLexem type;
-	std::string lexema;
-	Token* next;
-	int line;
-	int element;
-
-	Token();
-	Token(std::string lex, TypeLexem _type);
-
-	void line_position(int line_, int col_) {
-		line = line_;
-		element = col_;
-	}
+	Token token;
+	Token_node* next = nullptr;
+	
 	
 };
 
@@ -35,7 +23,7 @@ class HashTable
 private:
 	static const int default_size = 100;
 	double rehash_size = 0.75;
-	Token** arr;
+	Token_node** arr;
 	int size;
 	int count;
 
