@@ -91,6 +91,43 @@ void HashTable::Add(Token& add_token)
    
 }
 
+void HashTable::AddStr(std::string s)
+{
+    if (count + 1 > static_cast<int>(rehash_size * size)) {
+        ResizeHashTable();
+    }
+
+    int id = HashFunction(s, size);
+    Token_node* tmp = arr[id];
+    while (tmp != nullptr) {
+        if (tmp->token.lexema == s) {
+            return;
+        }
+        tmp = tmp->next;
+    }
+
+    Token_node* n = new Token_node;
+    n->key = s;
+    n->next = arr[id];
+    arr[id] = n;
+    count++;
+}
+
+bool HashTable::Exist_check(std::string s)
+{
+    int id = HashFunction(s, size);
+
+    Token_node* tmp = arr[id];
+
+    while (tmp) {
+        if (tmp->key == s) {
+            return true;
+        }
+        tmp = tmp->next;
+    }
+    return false;
+}
+
 Token* HashTable::Find(const std::string& lexema) {
     int id = HashFunction(lexema, size);
     Token_node* tmp = arr[id];

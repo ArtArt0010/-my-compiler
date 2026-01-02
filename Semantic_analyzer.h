@@ -1,18 +1,16 @@
 #pragma once
 #include "additionale_struct.h"
 #include <string>
-#include <set>
-#include<iostream>
-#include<fstream>
-
+#include <iostream>
+#include <fstream>
+#include "Hash.h"
 
 class Semantic
 {
 private:
 	std::string error_str = "";
 	std::string postfix_str = "";
-	std::set<std::string> announced;
-
+	HashTable declaration;
 
 	void check_advertisement(Node* root);
 

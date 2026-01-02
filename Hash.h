@@ -8,9 +8,10 @@
 
 struct Token_node
 {
+	std::string key;
 	Token token;
 	Token_node* next = nullptr;
-	
+	bool flag_token = false;
 	
 };
 
@@ -36,6 +37,11 @@ public:
     void ResizeHashTable();
 
     void Add(Token& add_token);
+
+	void AddStr(std::string s);
+
+
+	bool Exist_check(std::string s);
 
 	Token* Find(const std::string& lexema);
 

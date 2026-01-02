@@ -10,13 +10,15 @@ void Semantic::check_advertisement(Node* root)
 
 				for (int j = 0; j < tmp->child.size(); j++) {
 					if (tmp->child[j]->netermenal.find("Id:") != std::string::npos) {
+
 						std::string n = tmp->child[j]->netermenal.substr(3);
-						if (announced.find(n) != announced.end()) {
+
+						if (declaration.Exist_check(n)) {
 							std::cout << "Error double!"<<n<<"\n";
 							error_str += "Error double! " + n + "\n";
 						}
 						else {
-							announced.insert(n);
+							declaration.AddStr(n);
 						}
 					}
 				}
@@ -28,7 +30,7 @@ void Semantic::check_advertisement(Node* root)
 
 	if (root->netermenal.find("Id:") != std::string::npos) {
 		std::string n = root->netermenal.substr(3);
-		if (announced.find(n) == announced.end()) {
+		if (!declaration.Exist_check(n)) {
 			std::cout << "Error not announced! " << n << "\n";
 			error_str += "Error not announced! " + n + "\n";
 		}
@@ -61,17 +63,17 @@ void Semantic::checkDoubleCase(Node* node)
 		return;
 	}
 
-	std::set<std::string> set_case;
+	HashTable uniq_cases;
 
 	for (int i = 0; i < opt->child.size(); i++) {
 		if (opt->child[i]->netermenal.find("Case:") != std::string::npos) {
 			std::string n = opt->child[i]->netermenal.substr(5);
-			if (set_case.find(n) != set_case.end()) {
+			if (uniq_cases.Exist_check(n)) {
 				std::cout << "Error: duplicate case " << n << "\n";
 				error_str += "Error: duplicate case " + n + "\n";
 			}
 			else {
-				set_case.insert(n);
+				uniq_cases.AddStr(n);
 			}
 		}
 	}
@@ -95,7 +97,7 @@ void Semantic::print_postfix(Node* root)
 {
 	std::ofstream out("output_semantic.txt");
 	postfix(root);
-	//std::cout << "\n\n\n" << postfix_str;
+
 	std::cout <<"\n\n\n"<< postfix_str.substr(0 , postfix_str.size()-2);
 	out << error_str;
 	out<< "\n\n\n" << postfix_str.substr(0, postfix_str.size() - 2);

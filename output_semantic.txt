@@ -3,7 +3,7 @@ Error not announced! z
 
 
 int A 2 DECL
-int a b g 4 DECL
+int a b g w 5 DECL
 int c 2 DECL
 a A g + = 
 c 1 = 
