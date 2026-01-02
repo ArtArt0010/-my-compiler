@@ -24,6 +24,7 @@
     <ProjectGuid>{39b9a146-490f-405c-9009-1c3dde1107b9}</ProjectGuid>
     <RootNamespace>lexicalanalyzer</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <ProjectName>My Compiller</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
